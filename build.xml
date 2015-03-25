@@ -609,7 +609,7 @@ svn co https://lobby.svn.sourceforge.net/svnroot/lobby/trunk
 
 
     <target name="run" depends="game" description="override default run action of netbeans">
-        <java dir="${dir.build.game}" jar="${dir.build.game}/${game.name}.jar"/>
+        <java dir="${dir.build.game}" jar="${dir.build.game}/${game.name}.jar" fork="true"/>
     </target>
 
 
