@@ -1,6 +1,6 @@
 language: java
 before_install: ant clean
-install: ant
+install: ant jar test
 jdk:
   - oraclejdk8
   - oraclejdk7
