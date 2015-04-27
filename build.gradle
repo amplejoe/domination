@@ -11,9 +11,9 @@ buildscript {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(":AndroidME")
-    compile project(":BaseGameUtils")
-    compile fileTree(dir: 'libs', include: '*.jar')
+    //compile project(":AndroidME")
+    //compile project(":BaseGameUtils")
+    //compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 android {
