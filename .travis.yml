@@ -5,6 +5,7 @@ jdk:
   - oraclejdk7
 
 language: android
+install: ./gradlew tasks
 android:
   components:
     # Uncomment the lines below if you want to
