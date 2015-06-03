@@ -1,3 +1,5 @@
 .svn
 dist
 build
+.classpath
+.project
