@@ -1,4 +1,6 @@
 .svn
 dist
 build
+.classpath
+.project
 /bin/
