@@ -159,7 +159,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 	/**
 	 * The next fields should be injected.
 	 */
+
 	private PropertyManager propertyManager;
+	
+	private Parser parser;
 
 	/**
 	 * Creates a new RiskGame
@@ -167,6 +170,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public RiskGame() throws Exception {
 		// Should be injected instead
 		propertyManager = new PropertyManager();
+		parser = new Parser();
 
 		//try {
 
@@ -1818,91 +1822,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @throws Exception The file cannot be found
 	 */
 	public boolean setCardsfile(String f) throws Exception {
-
-
-		StringTokenizer st=null;
-
-
-		if (f.equals("default")) {
-			f = defaultCards;
-		}
-
-		BufferedReader bufferin=RiskUtil.readMap(RiskUtil.openMapStream(f) );
-
-
-/*
-
-		File file;
-
-		if (f.equals("default")) {
-			file = new File("maps/" + defaultCards);
-		}
-		else {
-			file = new File("maps/" + f);
-		}
-
-
-		FileReader filein = new FileReader(file);
-
-		BufferedReader bufferin = new BufferedReader(filein);
-
-
-*/
-
-		String input = bufferin.readLine();
-		String mode = "none";
-
-		boolean yesmissions=false;
-		boolean yescards=false;
-
-		while(input != null) {
-
-			if (input.equals("") || input.charAt(0)==';') {
-
-			}
-			else {
-
-				if (input.charAt(0)=='[' && input.charAt( input.length()-1 )==']') {
-					mode="newsection";
-				}
-				else { st = new StringTokenizer(input); }
-
-
-
-				if (mode.equals("newsection")) {
-
-					mode = input.substring(1, input.length()-1); // set mode to the name of the section
-
-					if (mode.equals("cards")) {
-
-						yescards=true;
-
-					}
-					else if (mode.equals("missions")) {
-
-						yesmissions=true;
-
-					}
-				}
-
-
-			}
-
-
-			input = bufferin.readLine(); // get next line
-
-		}
-
-
-		if ( yescards==false ) { throw new Exception("error with cards file"); }
-
-		cardsfile = f;
-		bufferin.close();
-
-		MapTranslator.setCards( f );
-
-		return yesmissions;
-
+		Parser.Response response = parser.parseCards(f, defaultCards);
+		cardsfile = response.getCardsFile();
+		return response.isMissions();
 	}
 
 	/**
