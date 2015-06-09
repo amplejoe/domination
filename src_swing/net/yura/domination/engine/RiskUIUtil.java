@@ -21,7 +21,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -36,12 +38,14 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
+
 import javax.imageio.ImageIO;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.BrowserLauncher;
@@ -306,40 +310,12 @@ public class RiskUIUtil {
 					if (dir != null) {
 						mapsdir = dir;
 					} else {
-						final AtomicReference<File> mapsdir1 = new AtomicReference(
-								new File("maps"));
-
-						// riskconfig.getProperty("default.map")
-
-						final String dmname = RiskGame.getDefaultMap();
-
-						while (!(new File(mapsdir1.get(), dmname).exists())) {
-
-							// on Apple OS X java 1.7 this deadlocks if not on
-							// the UI Thread
-							SwingUtilities.invokeAndWait(new Runnable() {
-								public void run() {
-
-									JOptionPane.showMessageDialog(null,
-											"Can not find map: " + dmname);
-
-									JFileChooser fc = new JFileChooser(
-											new File("."));
-									fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-									fc.setDialogTitle("Select maps directory");
-
-									int returnVal = fc.showOpenDialog(null);
-									if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
-										mapsdir1.set(fc.getSelectedFile());
-									} else {
-										System.exit(0);
-									}
-
-								}
-							});
+						dir = new File("./maps").toURI().toURL();
+						if (dir != null) {
+							mapsdir = dir;
+						} else {
+							mapsdir = fromUserDefinedDirectory();
 						}
-
-						mapsdir = mapsdir1.get().toURI().toURL();
 					}
 				} else {
 					mapsdir = getRiskFileURL("maps/");
@@ -352,6 +328,44 @@ public class RiskUIUtil {
 			}
 		}
 
+	}
+
+	private static URL fromUserDefinedDirectory()
+			throws InvocationTargetException, InterruptedException,
+			MalformedURLException {
+		final AtomicReference<File> mapsdir1 = new AtomicReference(new File(
+				"maps"));
+
+		// riskconfig.getProperty("default.map")
+
+		final String dmname = RiskGame.getDefaultMap();
+
+		while (!(new File(mapsdir1.get(), dmname).exists())) {
+
+			// on Apple OS X java 1.7 this deadlocks if not on the
+			// UI Thread
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+
+					JOptionPane.showMessageDialog(null, "Can not find map: "
+							+ dmname);
+
+					JFileChooser fc = new JFileChooser(new File("."));
+					fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					fc.setDialogTitle("Select maps directory");
+
+					int returnVal = fc.showOpenDialog(null);
+					if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+						mapsdir1.set(fc.getSelectedFile());
+					} else {
+						System.exit(0);
+					}
+
+				}
+			});
+		}
+
+		return mapsdir1.get().toURI().toURL();
 	}
 
 	public static Frame findParentFrame(Container c) {
@@ -398,7 +412,7 @@ public class RiskUIUtil {
 			File file = getSaveMapDir();
 			File[] mapsList = file.listFiles(filter);
 			if (mapsList != null) { // there is no reason at all this should
-									// ever be null, but sometimes it is?!
+				// ever be null, but sometimes it is?!
 				for (int c = 0; c < mapsList.length; c++) {
 					namesvector.add(mapsList[c].getName());
 				}
@@ -504,7 +518,7 @@ public class RiskUIUtil {
 		String[] options = { "OK", "Cancel" };
 
 		int result = JOptionPane.showOptionDialog(f, // the parent that the
-														// dialog blocks
+				// dialog blocks
 				message, // the dialog message array
 				"select " + a, // the title of the dialog window
 				JOptionPane.OK_CANCEL_OPTION, // option type

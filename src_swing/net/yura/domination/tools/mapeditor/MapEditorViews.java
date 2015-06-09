@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -36,6 +37,8 @@ import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
@@ -641,7 +644,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 				for (int c=0;c<names.length;c++) {
 
-					Continent continent = new Continent(names[c].replace(' ','_'),names[c],armies, RiskGame.getRandomColor() );
+					Continent continent = new Continent(names[c].replace(' ','_'),names[c],armies, ColorUtil.getRandomColor() );
 					newContinents.add(continent);
 				}
 

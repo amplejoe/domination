@@ -1,5 +1,8 @@
 package net.yura.domination.engine.ai;
 
+import java.io.File;
+import java.net.MalformedURLException;
+
 import junit.framework.TestCase;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskAdapter;
@@ -21,6 +24,11 @@ public class AISimulationTest extends TestCase{
 	
 	public void testSomething() throws InterruptedException {
 		RiskUIUtil.parseArgs(new String[] {});
+		try {
+			RiskUIUtil.mapsdir = new File("./game/Domination/maps").toURI().toURL();
+		} catch (MalformedURLException e) {
+		            throw new RuntimeException(e);
+		}
 		final Risk risk = new Risk();
 		risk.addRiskListener(new RiskAdapter() {
 

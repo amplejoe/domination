@@ -792,22 +792,22 @@ RiskUtil.printStackTrace(e);
                 }
 		else if (Addr.equals("DICE")) { // a server command
 
-			int attSize = RiskGame.getNumber(StringT.nextToken());
-			int defSize = RiskGame.getNumber(StringT.nextToken());
+			int attSize = NumberUtil.getNumber(StringT.nextToken());
+			int defSize = NumberUtil.getNumber(StringT.nextToken());
 
 			output=resb.getString( "core.dice.rolling") + System.getProperty("line.separator") + resb.getString( "core.dice.results");
 
 			int att[] = new int[ attSize ];
 			output = output + " " + resb.getString( "core.dice.attacker");
 			for (int c=0; c< attSize ; c++) {
-				att[c] = RiskGame.getNumber(StringT.nextToken());
+				att[c] = NumberUtil.getNumber(StringT.nextToken());
 				output = output + " " + (att[c]+1);
 			}
 
 			int def[] = new int[ defSize ];
 			output = output + " " + resb.getString( "core.dice.defender");
 			for (int c=0; c< defSize ; c++) {
-				def[c] = RiskGame.getNumber(StringT.nextToken());
+				def[c] = NumberUtil.getNumber(StringT.nextToken());
 				output = output + " " + (def[c]+1);
 			}
 
@@ -1005,7 +1005,7 @@ RiskUtil.printStackTrace(e);
 
 			for (int c=0; c< p.size() ; c++) {
 
-				int i = RiskGame.getNumber( StringT.nextToken() );
+				int i = NumberUtil.getNumber( StringT.nextToken() );
 				((Player)p.get(c)).setMission( (Mission)m.get(i) );
 				m.remove(i);
 
@@ -1681,8 +1681,8 @@ RiskUtil.printStackTrace(e);
                                     if (input.equals("placearmies")) {
                                             if (StringT.countTokens()==2) {
                                                     String country=StringT.nextToken();
-                                                    int c=RiskGame.getNumber( country );
-                                                    int num=RiskGame.getNumber( StringT.nextToken() );
+                                                    int c=NumberUtil.getNumber( country );
+                                                    int num=NumberUtil.getNumber( StringT.nextToken() );
                                                     Country t;
 
                                                     if (c != -1) {
@@ -1734,8 +1734,8 @@ RiskUtil.printStackTrace(e);
 
                                                     String arg1=StringT.nextToken();
                                                     String arg2=StringT.nextToken();
-                                                    int a1=RiskGame.getNumber(arg1);
-                                                    int a2=RiskGame.getNumber(arg2);
+                                                    int a1=NumberUtil.getNumber(arg1);
+                                                    int a2=NumberUtil.getNumber(arg2);
 
                                                     Country country1;
                                                     Country country2;
@@ -1797,7 +1797,7 @@ RiskUtil.printStackTrace(e);
 
                                             if (StringT.countTokens()==1) {
 
-                                                    int dice=RiskGame.getNumber( StringT.nextToken() );
+                                                    int dice=NumberUtil.getNumber( StringT.nextToken() );
 
                                                     if ( dice != -1 && game.rollA(dice) ) {
 
@@ -1850,7 +1850,7 @@ RiskUtil.printStackTrace(e);
                                                             noa=game.moveAll();
                                                     }
                                                     else {
-                                                            noa=RiskGame.getNumber( num );
+                                                            noa=NumberUtil.getNumber( num );
                                                     }
 
                                                     int mov=game.moveArmies(noa);
@@ -1877,8 +1877,8 @@ RiskUtil.printStackTrace(e);
 
                                                     String arg1=StringT.nextToken();
                                                     String arg2=StringT.nextToken();
-                                                    int a1=RiskGame.getNumber(arg1);
-                                                    int a2=RiskGame.getNumber(arg2);
+                                                    int a1=NumberUtil.getNumber(arg1);
+                                                    int a2=NumberUtil.getNumber(arg2);
 
                                                     Country country1;
                                                     Country country2;
@@ -1899,7 +1899,7 @@ RiskUtil.printStackTrace(e);
                                                             country2=null;
                                                     }
 
-                                                    int noa=RiskGame.getNumber( StringT.nextToken() );
+                                                    int noa=NumberUtil.getNumber( StringT.nextToken() );
 
                                                     if ( game.moveArmy(country1, country2, noa) ) {
                                                             //Moved {0} armies from {1} to {2}.
@@ -1967,7 +1967,7 @@ RiskUtil.printStackTrace(e);
                                             if (StringT.countTokens()==1) {
 
                                                     String strCountry = StringT.nextToken();
-                                                    int nCountryId = RiskGame.getNumber(strCountry);
+                                                    int nCountryId = NumberUtil.getNumber(strCountry);
                                                     Country t;
 
                                                     if (nCountryId != -1) {
@@ -1997,7 +1997,7 @@ RiskUtil.printStackTrace(e);
 
                                             if (StringT.countTokens()==1) {
 
-                                                    int dice=RiskGame.getNumber( StringT.nextToken() );
+                                                    int dice=NumberUtil.getNumber( StringT.nextToken() );
                                                     if ( dice != -1 && game.rollD(dice) ) {
 
                                                             if ( battle ) {
@@ -2011,8 +2011,8 @@ RiskUtil.printStackTrace(e);
                                                             // client does a roll, and this is not called
                                                             if ( shouldGameCommand(Addr) ) { // recursive call
 
-                                                                    int[] attackerResults = game.rollDice( game.getAttackerDice() );
-                                                                    int[] defenderResults = game.rollDice( game.getDefenderDice() );
+                                                                    int[] attackerResults = RiskUtil.rollDice( game.getAttackerDice() );
+                                                                    int[] defenderResults = RiskUtil.rollDice( game.getDefenderDice() );
 
                                                                     String serverRoll = "";
 

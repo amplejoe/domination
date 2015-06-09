@@ -1208,7 +1208,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			Country country = ((Country)t.remove(0));
 			a.add( country );
 
-			myMap.getConnectedEmpire(
+			RiskUtil.getConnectedEmpire(
 				t,
 				a,
 				country.getNeighbours(),
