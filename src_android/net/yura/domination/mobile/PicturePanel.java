@@ -188,7 +188,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 RiskGame game = myrisk.getGame();
                 int noc = game.getCountries().length;
 
-                BALL_SIZE = game.getCircleSize();
+                BALL_SIZE = game.getPropertyManager().getCircleSize();
 
 
 

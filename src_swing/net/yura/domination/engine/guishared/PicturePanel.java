@@ -124,7 +124,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 
 		RiskGame game = myrisk.getGame();
-                BALL_SIZE = game.getCircleSize();
+                BALL_SIZE = game.getPropertyManager().getCircleSize();
                 setFont( new java.awt.Font("Arial", java.awt.Font.PLAIN, (BALL_SIZE+2)/2 ) );
 		original = O;
 		cc=NO_COUNTRY;
@@ -1146,7 +1146,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 	public static Image getImage(RiskGame game) throws IOException {
 		// attempt to get the preview as its smaller
 		String previewName = game.getPreviewPic();
-                String name = game.getMapName();
+                String name = game.getPropertyManager().getMapName();
                 Image img=null;
                 int width=-1,height=-1;
                 boolean error = false;

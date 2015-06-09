@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -57,6 +58,7 @@ import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
@@ -66,6 +68,7 @@ import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.PropertyManager;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
@@ -84,6 +87,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	private Risk myrisk;
 	private RiskGame myMap;
+	private PropertyManager propertyManager;
         private String fileName;
         private File imgFile;
         
@@ -362,7 +366,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                     
                     if (myMap!=null) {
                         //myMap.setCircleSize(circle.getValue());
-                        myMap.setCircleSize(  ((Integer)circle.getValue()).intValue()  );
+                        propertyManager.setCircleSize(  ((Integer)circle.getValue()).intValue()  );
                         editPanel.repaint();
                     }
 		}
@@ -415,6 +419,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im,String fname,File img) {
 
 		myMap = m;
+		propertyManager = myMap.getPropertyManager();
 
 		editPanel.setMap(myMap);
 		views.setMap(myMap);
@@ -433,7 +438,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 fileName = fname;
                 imgFile = img;
                 
-                circle.setValue( new Integer(m.getCircleSize()) );
+                circle.setValue( new Integer(propertyManager.getCircleSize()) );
                 
 		revalidate();
 		repaint();
@@ -531,7 +536,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                                 TegMapLoader loader = new TegMapLoader();
                                 loader.load( file , myMap , this);
 
-                                myMap.setMapName(null);
+                                propertyManager.setMapName(null);
                                 myMap.setPreviewPic(null);
                                 fileName = file.getParentFile().getName();
                             }
@@ -679,7 +684,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
                     JList list = new JList( RiskUtil.asVector(categories) );
                     
-                    String version = String.valueOf( myMap.getVersion() );
+                    String version = String.valueOf( myMap.getPropertyManager().getVersion() );
 
                     int result = showInputDialog(
                             new String[] {"Author's Full Name:","Email:","Map Name:","Description:","Categories:","version:"},
@@ -979,7 +984,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
         private void autodraw(boolean dots) {
             BufferedImage imgMap = editPanel.getImageMap();
             Graphics g = imgMap.getGraphics();
-            int size = myMap.getCircleSize();
+            int size = myMap.getPropertyManager().getCircleSize();
             Country[] countries = myMap.getCountries();
             for (Country country:countries) {
                 Color color = new Color(country.getColor(), country.getColor(), country.getColor());
@@ -1481,7 +1486,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 //                buffer.append(n); // in case we put a name or a version, add a extra empty line
 //            }
 
-            Map properties = myMap.getProperties();
+            PropertyManager properties = myMap.getPropertyManager();
             if (!properties.isEmpty()) {
                 Iterator keyvals = properties.entrySet().iterator();
                 while (keyvals.hasNext()) {
@@ -1606,7 +1611,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
                 else {
                     newVersion = Integer.parseInt(version) + 1;
                 }
-                myMap.setVersion( newVersion );
+                myMap.getPropertyManager().setVersion( newVersion );
             }
             
 	    String safeName = MapsTools.getSafeMapID(mapName);

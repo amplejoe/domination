@@ -17,11 +17,14 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
 import javax.swing.event.MouseInputListener;
+
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.PropertyManager;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
 
@@ -40,6 +43,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	//private List countries; // every item in this list also has its position+1 stored as the "color" value of it
 	//private List continents;
 	private RiskGame myMap;
+	private PropertyManager propertyManager;
 	private BufferedImage pic;
 	private BufferedImage map;
 	private BufferedImage drawImage;
@@ -152,6 +156,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
 	public void setMap(RiskGame a) {
 
 		myMap = a;
+		propertyManager = myMap.getPropertyManager();
 
 		//countries = Arrays.asList( myMap.getCountries() );
 		//continents = Arrays.asList( myMap.getContinents() );
@@ -311,7 +316,7 @@ public class MapEditorPanel extends JPanel implements MouseInputListener,MouseWh
         
             long time = System.currentTimeMillis();
 
-	    int d = myMap.getCircleSize();
+	    int d = propertyManager.getCircleSize();
 
 	    int width = pic.getWidth();
 

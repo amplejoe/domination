@@ -148,8 +148,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private String ImageMap;
 	private String previewPic;
 
-        private Map properties;
-
 	private Vector replayCommands;
 	private int maxDefendDice;
 	private int cardMode;
@@ -157,11 +155,18 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private boolean runmaptest=false;
 	private boolean recycleCards=false;
 
+	
+	/**
+	 * The next fields should be injected.
+	 */
+	private PropertyManager propertyManager;
 
 	/**
 	 * Creates a new RiskGame
 	 */
 	public RiskGame() throws Exception {
+		// Should be injected instead
+		propertyManager = new PropertyManager();
 
 		//try {
 
@@ -1468,7 +1473,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 		}
 		bufferin.close();
 
-                int gameVer = getVersion();
+                int gameVer = propertyManager.getVersion();
                 if (gameVer > mapVer) {
                     throw new Exception(mapfile + " too old, ver " + mapVer + ". game saved with ver " + gameVer);
                 }
@@ -1510,7 +1515,6 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		runmaptest = false;
 		previewPic = null;
-		properties = new HashMap();
 
 		String input = bufferin.readLine();
 		String mode = null;
@@ -1568,7 +1572,7 @@ transient - A keyword in the Java programming language that indicates that a fie
                                             String key = input.substring(0,space);
                                             String value = input.substring(space+1);
 
-                                            properties.put(key, value);
+                                            propertyManager.put(key, value);
                                         }
                                         // else unknown section
 				}
@@ -1607,7 +1611,7 @@ transient - A keyword in the Java programming language that indicates that a fie
                 usedCards = new Vector();
 		Missions = new Vector();
 
-                properties = new HashMap();
+		propertyManager.clear();
 
                 runmaptest = false;
                 previewPic=null;
@@ -2105,53 +2109,8 @@ transient - A keyword in the Java programming language that indicates that a fie
             previewPic = prv;
         }
 
-        public Map getProperties() {
-            return properties;
-        }
-
-        int getIntProperty(String name, int defaultValue) {
-            Object value = properties.get(name);
-            if (value!=null) {
-                return Integer.parseInt( String.valueOf(value) );
-            }
-            return defaultValue;
-        }
-        void setIntProperty(String name, int value, int defaultValue) {
-            if (value == defaultValue) {
-                properties.remove(name);
-            }
-            else {
-                properties.put(name, String.valueOf(value));
-            }
-        }
-
-        public int getCircleSize() {
-            return getIntProperty("circle",20);
-        }
-        public void setCircleSize(int a) {
-            setIntProperty("circle",a,20);
-        }
-
-        public int getVersion() {
-            return getIntProperty("ver",1);
-        }
-        public void setVersion(int newVersion) {
-            setIntProperty("ver",newVersion,1);
-        }
-
-        /**
-         * can return the name or null
-         */
-	public String getMapName() {
-            return (String) properties.get("name");
-	}
-        public void setMapName(String name) {
-            if (name==null) {
-                properties.remove("name");
-            }
-            else {
-                properties.put("name", name);
-            }
+        public PropertyManager getPropertyManager() {
+            return propertyManager;
         }
 
 	/**
