@@ -122,11 +122,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 	private String cardsfile;
 	private int setup;
 
-	private Vector Players;
-	private Country[] Countries;
-	private Continent[] Continents;
-	private Vector Cards,usedCards;
-	private Vector Missions;
+	private Vector players;
+	private Country[] countries;
+	private Continent[] continents;
+	private Vector cards,usedCards;
+	private Vector missions;
 
 	private Player currentPlayer;
 	private int gameState;
@@ -144,8 +144,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 	private transient int battleRounds;
 
-	private String ImagePic;
-	private String ImageMap;
+	private String imagePic;
+	private String imageMap;
 	private String previewPic;
 
 	private Vector replayCommands;
@@ -170,7 +170,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public RiskGame() throws Exception {
 		// Should be injected instead
 		propertyManager = new PropertyManager();
-		parser = new Parser();
+		parser = new Parser(propertyManager);
 
 		//try {
 
@@ -183,7 +183,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		setup=0; // when setup reaches the number of players it goes into normal mode
 
-		Players = new Vector();
+		players = new Vector();
 
 		currentPlayer=null;
 		gameState=STATE_NEW_GAME;
@@ -228,13 +228,13 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public boolean addPlayer(int type, String name, int color, String a) {
 		if (gameState==STATE_NEW_GAME ) { // && !name.equals("neutral") && !(color==Color.gray)
 
-			for (int c=0; c< Players.size() ; c++) {
-				if (( name.equals(((Player)Players.elementAt(c)).getName() )) || (color ==  ((Player)Players.elementAt(c)).getColor() )) return false;
+			for (int c=0; c< players.size() ; c++) {
+				if (( name.equals(((Player)players.elementAt(c)).getName() )) || (color ==  ((Player)players.elementAt(c)).getColor() )) return false;
 			}
 
 			//System.out.print("Player added. Type: " +type+ "\n"); // testing
 			Player player = new Player(type, name, color , a);
-			Players.add(player);
+			players.add(player);
 			return true;
 		}
 		else return false;
@@ -250,16 +250,16 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			int n=-1;
 
-			for (int c=0; c< Players.size() ; c++) {
-				if (name.equals( ((Player)Players.elementAt(c)).getName() )) n=c;
+			for (int c=0; c< players.size() ; c++) {
+				if (name.equals( ((Player)players.elementAt(c)).getName() )) n=c;
 			}
 			if (n==-1) {
 				//System.out.print("Error: No player found\n"); // testing
 				return false;
 			}
 			else {
-				Players.removeElementAt(n);
-				Players.trimToSize();
+				players.removeElementAt(n);
+				players.trimToSize();
 				//System.out.print("Player removed\n"); // testing
 				return true;
 			}
@@ -322,7 +322,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 				if (runmaptest) {
 
 					//try {
-						RiskUtil.testMap(Countries); // testing maps
+						RiskUtil.testMap(countries); // testing maps
 					//}
 					//catch (Exception e) {
 					//	RiskUtil.printStackTrace(e);
@@ -332,11 +332,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			}
 
-			if (Countries==null) { return; }
+			if (countries==null) { return; }
 
-			if (gameMode==MODE_SECRET_MISSION && Missions.size() < Players.size() ) { return; }
+			if (gameMode==MODE_SECRET_MISSION && missions.size() < players.size() ) { return; }
 
-			int armies = ( 10 - Players.size() ) *  Math.round( Countries.length * 0.12f );
+			int armies = ( 10 - players.size() ) *  Math.round( countries.length * 0.12f );
 
 			// System.out.print("armies="+ armies +"\n");
 			//
@@ -347,8 +347,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 			//
 			//System.out.print("Game Started\n"); // testing
 
-			for (int c=0; c< Players.size() ; c++) {
-				((Player)Players.elementAt(c)).addArmies(armies);
+			for (int c=0; c< players.size() ; c++) {
+				((Player)players.elementAt(c)).addArmies(armies);
 			}
 
 			gameState=STATE_PLACE_ARMIES;
@@ -365,7 +365,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return Player Returns the current player in the game
 	 */
 	public Player setCurrentPlayer(int c) {
-                currentPlayer = (Player)Players.get(c);
+                currentPlayer = (Player)players.get(c);
 		return currentPlayer;
 
 	}
@@ -375,7 +375,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return String Returns the name of a randomly picked player from the set of players
 	 */
 	public int getRandomPlayer() {
-                return RiskUtil.RAND.nextInt( Players.size() );
+                return RiskUtil.RAND.nextInt( players.size() );
 	}
 
 	/**
@@ -384,9 +384,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 */
 	public String getDesrvedCard() {
 		//check to see if the player deserves a new risk card
-		if (capturedCountry==true && Cards.size() > 0) {
+		if (capturedCountry==true && cards.size() > 0) {
 
-			Card c = (Card)Cards.elementAt( RiskUtil.RAND.nextInt(Cards.size()) );
+			Card c = (Card)cards.elementAt( RiskUtil.RAND.nextInt(cards.size()) );
 			if (c.getCountry() == null) return Card.WILDCARD;
 			else return ( (Country)c.getCountry() ).getColor()+"";
 		}
@@ -413,14 +413,14 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			while (true) {
 
-				for (int c=0; c< Players.size() ; c++) {
-					if ( currentPlayer==((Player)Players.elementAt(c)) && Players.size()==(c+1) ) {
-						currentPlayer=(Player)Players.elementAt(0);
-						c=Players.size();
+				for (int c=0; c< players.size() ; c++) {
+					if ( currentPlayer==((Player)players.elementAt(c)) && players.size()==(c+1) ) {
+						currentPlayer=(Player)players.elementAt(0);
+						c=players.size();
 					}
-					else if ( currentPlayer==((Player)Players.elementAt(c)) && Players.size() !=(c+1) ) {
-						currentPlayer=(Player)Players.elementAt(c+1);
-						c=Players.size();
+					else if ( currentPlayer==((Player)players.elementAt(c)) && players.size() !=(c+1) ) {
+						currentPlayer=(Player)players.elementAt(c+1);
+						c=players.size();
 					}
 				}
 
@@ -448,10 +448,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 				}
 
 				// add new armies for the Continents Owned
-				for (int c=0; c< Continents.length ; c++) {
+				for (int c=0; c< continents.length ; c++) {
 
-					if ( Continents[c].isOwned(currentPlayer) ) {
-						currentPlayer.addArmies( Continents[c].getArmyValue() );
+					if ( continents[c].isOwned(currentPlayer) ) {
+						currentPlayer.addArmies( continents[c].getArmyValue() );
 					}
 
 				}
@@ -674,17 +674,17 @@ transient - A keyword in the Java programming language that indicates that a fie
                     }
                     else {
                         // find a empty country
-                        int a = RiskUtil.RAND.nextInt(Countries.length);
+                        int a = RiskUtil.RAND.nextInt(countries.length);
 			boolean done = false;
-			for (int c=a; c < Countries.length ; c++) {
-				if ( Countries[c].getOwner() == null ) {
-					return Countries[c].getColor();
+			for (int c=a; c < countries.length ; c++) {
+				if ( countries[c].getOwner() == null ) {
+					return countries[c].getColor();
 				}
-				else if ( c == Countries.length-1 && !done ) {
+				else if ( c == countries.length-1 && !done ) {
 					c = -1;
 					done = true;
 				}
-				else if ( c == Countries.length-1 && done ) {
+				else if ( c == countries.length-1 && done ) {
 					break;
 				}
 			}
@@ -1084,10 +1084,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			currentPlayer.setCapital(c);
 
-			for (int b=0; b< Cards.size() ; b++) {
+			for (int b=0; b< cards.size() ; b++) {
 
-				if ( c== ((Card)Cards.elementAt(b)).getCountry() ) {
-					Cards.removeElementAt(b);
+				if ( c== ((Card)cards.elementAt(b)).getCountry() ) {
+					cards.removeElementAt(b);
 					//System.out.print("card removed because it is a capital\n");
 				}
 
@@ -1112,14 +1112,14 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		// check if the player has won
 		int won=0;
-		for (int c=0; c< Continents.length ; c++) {
+		for (int c=0; c< continents.length ; c++) {
 
-			if ( Continents[c].isOwned(currentPlayer) ) {
+			if ( continents[c].isOwned(currentPlayer) ) {
 				won++;
 			}
 
 		}
-		if (won == Continents.length ) {
+		if (won == continents.length ) {
 
 			result=true;
 			//System.out.print("The Game Is Over, "+currentPlayer.getName()+" has won!\n");
@@ -1161,9 +1161,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			if ( currentPlayer==((Country)currentPlayer.getCapital()).getOwner() ) {
 
-				for (int c=0; c< Players.size() ; c++) {
+				for (int c=0; c< players.size() ; c++) {
 
-					if ( ((Vector)currentPlayer.getTerritoriesOwned()).contains((Country)((Player)Players.elementAt(c)).getCapital()) ) {
+					if ( ((Vector)currentPlayer.getTerritoriesOwned()).contains((Country)((Player)players.elementAt(c)).getCapital()) ) {
 						capitalcount++;
 					}
 
@@ -1171,7 +1171,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 			}
 
-			if ( capitalcount==Players.size() ) {
+			if ( capitalcount==players.size() ) {
 				result=true;
 			}
 
@@ -1293,11 +1293,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 		Country closestCountryCanvas = null;
 		int closestDistance = Integer.MAX_VALUE;
 
-		for (int index=0; index < Countries.length; index++) {
-                        int distance = Countries[index].getDistanceTo(x,y);
+		for (int index=0; index < countries.length; index++) {
+                        int distance = countries[index].getDistanceTo(x,y);
                         if (distance < closestDistance) {
                                 // we have a country closer to the point (x,y)
-                                closestCountryCanvas = Countries[index];
+                                closestCountryCanvas = countries[index];
                                 closestDistance = distance;
                         }
 		}
@@ -1326,8 +1326,8 @@ transient - A keyword in the Java programming language that indicates that a fie
                     Continents = new Vector();
                 }
                 else {
-                    Countries = new Vector(Arrays.asList(this.Countries));
-                    Continents = new Vector(Arrays.asList(this.Continents));
+                    Countries = new Vector(Arrays.asList(this.countries));
+                    Continents = new Vector(Arrays.asList(this.continents));
 		}
 
                 int mapVer = 1;
@@ -1358,8 +1358,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 				if (mode.equals("files")) {
 					//System.out.print("Adding files\n"); // testing
 
-					if ( input.startsWith("pic ") )  { ImagePic = input.substring(4); } //System.out.print("file: ImagePic added!\n"); // testing
-					else if ( input.startsWith("map ") ) { ImageMap = input.substring(4); } //System.out.print("file: ImageMap added!\n"); // testing
+					if ( input.startsWith("pic ") )  { imagePic = input.substring(4); } //System.out.print("file: ImagePic added!\n"); // testing
+					else if ( input.startsWith("map ") ) { imageMap = input.substring(4); } //System.out.print("file: ImageMap added!\n"); // testing
 					else if ( input.startsWith("crd ") ) { }
 					else if ( input.startsWith("prv ") ) { }
 					else { throw new Exception("error with files section in map file: "+input); }
@@ -1440,8 +1440,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 					if (mode.equals("files") ) {
 						//System.out.print("Section: files found\n"); // testing
-						ImagePic=null;
-						ImageMap=null;
+						imagePic=null;
+						imageMap=null;
 					}
 					else if (mode.equals("continents") ) {
 						//System.out.print("Section: continents found\n"); // testing
@@ -1483,8 +1483,8 @@ transient - A keyword in the Java programming language that indicates that a fie
                 }
 
 		if (cleanLoad) {
-			this.Countries = (Country[])Countries.toArray( new Country[Countries.size()] );
-			this.Continents = (Continent[])Continents.toArray( new Continent[Continents.size()] );
+			this.countries = (Country[])Countries.toArray( new Country[Countries.size()] );
+			this.continents = (Continent[])Continents.toArray( new Continent[Continents.size()] );
 		}
 		//System.out.print("Map Loaded\n");
 	}
@@ -1496,102 +1496,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @throws Exception The file cannot be found
 	 */
 	public boolean setMapfile(String f) throws Exception {
-
-		if (f.equals("default")) {
-			f = defaultMap;
-		}
-
-		BufferedReader bufferin=RiskUtil.readMap( RiskUtil.openMapStream(f) );
-/*
-		File file;
-
-		if (f.equals("default")) {
-			file = new File("maps/" + defaultMap);
-		}
-		else {
-			file = new File("maps/" + f);
-		}
-
-		FileReader filein = new FileReader(file);
-
-		BufferedReader bufferin = new BufferedReader(filein);
-*/
-
-		runmaptest = false;
-		previewPic = null;
-
-		String input = bufferin.readLine();
-		String mode = null;
-
-		boolean yesmap = false;
-		boolean returnvalue = false;
-		boolean yescards = false;
-
-		while(input != null) {
-
-			if (input.equals("") || input.charAt(0)==';') {
-
-			}
-			else {
-
-				if (input.charAt(0)=='[' && input.charAt( input.length()-1 )==']') {
-					mode="newsection";
-				}
-
-				if ("files".equals(mode)) {
-
-					if ( input.startsWith("pic ") ) { ImagePic = input.substring(4); }
-
-					else if ( input.startsWith("prv ") ) { previewPic = input.substring(4); }
-
-					else if ( input.startsWith("crd ") ) { yescards=true; returnvalue = setCardsfile( input.substring(4) ); }
-
-				}
-				else if ("borders".equals(mode)) {
-
-					yesmap=true;
-
-				}
-				else if ("newsection".equals(mode)) {
-
-					mode = input.substring(1, input.length()-1); // set mode to the name of the section
-
-				}
-				else if (mode == null) {
-
-                                        int space = input.indexOf(' ');
-
-                                        if (input.equals("test")) {
-
-						runmaptest = true;
-
-					}
-                                        //else if (input.startsWith("name ")) {
-					//	mapName = input.substring(5,input.length());
-					//}
-                                        //else if (input.startsWith("ver ")) {
-                                        //        ver = Integer.parseInt( input.substring(4,input.length()) );
-                                        //}
-                                        else if (space >= 0) {
-                                            String key = input.substring(0,space);
-                                            String value = input.substring(space+1);
-
-                                            propertyManager.put(key, value);
-                                        }
-                                        // else unknown section
-				}
-			}
-
-			input = bufferin.readLine(); // get next line
-		}
-
-		if ( yesmap==false ) { throw new Exception("error with map file"); }
-		if ( yescards==false ) { throw new Exception("cards file not specified in map file"); }
-
-		mapfile = f;
-		bufferin.close();
-
-		return returnvalue;
+		Parser.MapResult result = parser.parseMap(f, defaultMap, defaultCards);
+		mapfile = result.getMapFile();
+		imagePic = result.getImagePicture();
+		previewPic = result.getPreviewPicture();
+		return result.isMissions();
 	}
 
         /**
@@ -1602,18 +1511,18 @@ transient - A keyword in the Java programming language that indicates that a fie
 		mapfile = null;
 		cardsfile = null;
 
-		ImagePic = null;
-		ImageMap = null;
+		imagePic = null;
+		imageMap = null;
 	}
 
 	public void setupNewMap() {
 
-		Countries = new Country[0];
-		Continents = new Continent[0];
+		countries = new Country[0];
+		continents = new Continent[0];
 
-		Cards = new Vector();
+		cards = new Vector();
                 usedCards = new Vector();
-		Missions = new Vector();
+		missions = new Vector();
 
 		propertyManager.clear();
 
@@ -1625,10 +1534,10 @@ transient - A keyword in the Java programming language that indicates that a fie
 	}
 
 	public void setCountries(Country[] a) {
-		Countries = a;
+		countries = a;
 	}
 	public void setContinents(Continent[] a) {
-		Continents = a;
+		continents = a;
 	}
 
 	/**
@@ -1640,9 +1549,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		StringTokenizer st=null;
 
-		Cards = new Vector();
+		cards = new Vector();
                 usedCards = new Vector();
-		Missions = new Vector();
+		missions = new Vector();
 
 		//System.out.print("Starting load cards and missions...\n");
 
@@ -1674,14 +1583,14 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 					if (name.equals(Card.WILDCARD)) {
 						Card card = new Card(name, null);
-						Cards.add(card);
+						cards.add(card);
 					}
 					else if ( name.equals(Card.CAVALRY) || name.equals(Card.INFANTRY) || name.equals(Card.CANNON) ) {
 						int country=Integer.parseInt( st.nextToken() );
 
 						//System.out.print( Countries[ country - 1 ].getName() +"\n"); // testing
-						Card card = new Card(name, Countries[ country - 1 ]);
-						Cards.add(card);
+						Card card = new Card(name, countries[ country - 1 ]);
+						cards.add(card);
 					}
 					else {
 						throw new Exception("unknown item found in cards file: "+name);
@@ -1698,11 +1607,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 					int s1 = Integer.parseInt(st.nextToken());
 					Player p;
 
-					if (s1==0 || s1>Players.size() ) {
+					if (s1==0 || s1>players.size() ) {
 						p = null;
 					}
 					else {
-						p = (Player)Players.elementAt( s1-1 );
+						p = (Player)players.elementAt( s1-1 );
 					}
 
 					int noc = Integer.parseInt(st.nextToken());
@@ -1753,11 +1662,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 
                                         }
 
-					if ( rawLoad || s1 <= Players.size() ) {
+					if ( rawLoad || s1 <= players.size() ) {
 
 						//System.out.print(description+"\n"); // testing
 						Mission mission = new Mission(p, noc, noa, c1, c2, c3, description);
-						Missions.add(mission);
+						missions.add(mission);
 					}
 					else {
 						//System.out.print("NOT adding this mission as it refures to an unused player\n"); // testing
@@ -1808,7 +1717,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 				return null;
 			}
 			else {
-				return Continents[ s-1 ];
+				return continents[ s-1 ];
 			}
 
 		}
@@ -1822,9 +1731,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @throws Exception The file cannot be found
 	 */
 	public boolean setCardsfile(String f) throws Exception {
-		Parser.Response response = parser.parseCards(f, defaultCards);
-		cardsfile = response.getCardsFile();
-		return response.isMissions();
+		Parser.CardsResult result = parser.parseCards(f, defaultCards);
+		cardsfile = result.getCardsFile();
+		return result.isMissions();
 	}
 
 	/**
@@ -1833,7 +1742,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	public List shuffleCountries() {
 
                 // we create a COPY of the Countries array, so that we do not mess up the real one
-		List oldCountries = new Vector( Arrays.asList( Countries ) );
+		List oldCountries = new Vector( Arrays.asList( countries ) );
 
 		//Vector newCountries = new Vector();
 		//while(oldCountries.size() > 0) {
@@ -1930,11 +1839,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 		Country empty=null;
 
 
-		for (int c=0; c< Countries.length ; c++) {
+		for (int c=0; c< countries.length ; c++) {
 
-			if ( Countries[c].getOwner() == null ) {
-				empty = Countries[c];
-				c=Countries.length;
+			if ( countries[c].getOwner() == null ) {
+				empty = countries[c];
+				c=countries.length;
 			}
 
 		}
@@ -1952,7 +1861,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return boolean Return trues if the set up is complete, returns false otherwise
 	 */
 	public boolean getSetupDone() {
-		return setup == Players.size();
+		return setup == players.size();
 	}
 
 	/**
@@ -1984,7 +1893,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return Vector Return all the players
 	 */
 	public Vector getPlayers() {
-		return Players;
+		return players;
 	}
 
 	/**
@@ -1993,11 +1902,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 */
 	public Vector getPlayersStats() {
 
-		for (int c=0; c< Players.size() ; c++) {
-			workOutEndGoStats( (Player)Players.elementAt(c) );
+		for (int c=0; c< players.size() ; c++) {
+			workOutEndGoStats( (Player)players.elementAt(c) );
 		}
 
-		return Players;
+		return players;
 	}
 
 	/**
@@ -2021,7 +1930,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return URL ImagePic
 	 */
 	public String getImagePic() {
-		return ImagePic;
+		return imagePic;
 	}
 
 	public String getPreviewPic() {
@@ -2040,7 +1949,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return URL ImageMap
 	 */
 	public String getImageMap() {
-		return ImageMap;
+		return imageMap;
 	}
 
 	public String getCardsFile() {
@@ -2052,7 +1961,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	}
 
 	public Vector getCards() {
-		return Cards;
+		return cards;
 	}
         public Vector getUsedCards() {
             return usedCards;
@@ -2067,9 +1976,9 @@ transient - A keyword in the Java programming language that indicates that a fie
 
 		int total=0;
 
-		for (int c=0; c< Continents.length ; c++) {
+		for (int c=0; c< continents.length ; c++) {
 
-			if ( Continents[c].isOwned(p) ) {
+			if ( continents[c].isOwned(p) ) {
 				total++;
 			}
 
@@ -2128,8 +2037,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 */
 	public Country getCountryInt(int color) {
 
-		if (color <= 0 || color > Countries.length ) { return null; }
-		else return Countries[color-1];
+		if (color <= 0 || color > countries.length ) { return null; }
+		else return countries[color-1];
 
 	}
 
@@ -2196,8 +2105,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 
                 int cardIndex = -1;
 
-		for (int c=0; c< Cards.size() ; c++) {
-                        Card theCard = ((Card)Cards.elementAt(c));
+		for (int c=0; c< cards.size() ; c++) {
+                        Card theCard = ((Card)cards.elementAt(c));
 
                         // if we are looking for a wildcard, and this card is also a wildcard
                         if (name.equals(Card.WILDCARD) && name.equals( theCard.getName() ) ) {
@@ -2213,8 +2122,8 @@ transient - A keyword in the Java programming language that indicates that a fie
 		}
 
                 // find the card and remove it
-                Card theCard = (Card)Cards.remove(cardIndex);
-                Cards.trimToSize(); // not sure if this is needed
+                Card theCard = (Card)cards.remove(cardIndex);
+                cards.trimToSize(); // not sure if this is needed
 
                 recycleUsedCards();
 
@@ -2232,8 +2141,8 @@ transient - A keyword in the Java programming language that indicates that a fie
         private boolean recycleUsedCards() {
             // if we have removed the last card, and we want to reuse our cards, then we add all the used ones into the current cards vector
             Vector used = getUsedCards();
-            if (Cards.isEmpty() && recycleCards && !used.isEmpty()) {
-                Cards.addAll(used);
+            if (cards.isEmpty() && recycleCards && !used.isEmpty()) {
+                cards.addAll(used);
                 used.clear();
                 return true;
             }
@@ -2245,7 +2154,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return int Return the number of number of players
 	 */
 	public int getNoPlayers() {
-		return Players.size();
+		return players.size();
 	}
 
 	/**
@@ -2254,7 +2163,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 */
 	public Country[] getCountries() {
 
-		return Countries;
+		return countries;
 	}
 
 	/**
@@ -2262,7 +2171,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return Vector Return the Continents in the current game
 	 */
 	public Continent[] getContinents() {
-		return Continents;
+		return continents;
 	}
 
 	/**
@@ -2270,12 +2179,12 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return int Return the number of countries in the current game
 	 */
 	public int getNoCountries() {
-		return Countries.length;
+		return countries.length;
 	}
 
 	public int getNoContinents() {
 
-		return Continents.length;
+		return continents.length;
 
 	}
 
@@ -2284,7 +2193,7 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return Vector Return the Missions in the current game
 	 */
 	public Vector getMissions() {
-		return Missions;
+		return missions;
 	}
 
 	/**
@@ -2292,11 +2201,11 @@ transient - A keyword in the Java programming language that indicates that a fie
 	 * @return int Return the number of Missions in the game
 	 */
 	public int getNoMissions() {
-		return Missions.size();
+		return missions.size();
 	}
 
 	public int getNoCards() {
-		return Cards.size();
+		return cards.size();
 	}
 
 	public boolean isRecycleCards() {
@@ -2342,7 +2251,7 @@ transient - A keyword in the Java programming language that indicates that a fie
     }
 
     public Player getPlayer(String name) {
-        for (Player player: (List<Player>)Players) {
+        for (Player player: (List<Player>)players) {
             if (player.getName().equals(name)) {
                 return player;
             }
