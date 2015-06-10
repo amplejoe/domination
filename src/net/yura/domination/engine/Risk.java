@@ -725,7 +725,7 @@ RiskUtil.printStackTrace(e);
                     output = "someone has gone: ";
 
                     // get all the players and make all with the ip of the leaver become nutral
-                    List leavers = game.getPlayers();
+                    List leavers = game.getPlayerManager().getPlayers();
 
                     String newPlayerAddress=null;
 
@@ -1001,7 +1001,7 @@ RiskUtil.printStackTrace(e);
 		else if (Addr.equals("MISSION")) { // a server command
 
 			List m = game.getMissions();
-			List p = game.getPlayers();
+			List p = game.getPlayerManager().getPlayers();
 
 			for (int c=0; c< p.size() ; c++) {
 
@@ -1180,7 +1180,7 @@ RiskUtil.printStackTrace(e);
 
 						output=resb.getString( "core.info.title") + "\n";
 
-						List players = game.getPlayers();
+						List players = game.getPlayerManager().getPlayers();
 
 						for (int a=0; a< players.size() ; a++) {
 
@@ -1199,7 +1199,7 @@ RiskUtil.printStackTrace(e);
 
 					if (StringT.hasMoreTokens()==false) {
 
-						if ( game.getPlayers().size() == 0) {
+						if ( game.getPlayerManager().getNoPlayers() == 0) {
 
 						    if (!replay) {
 
@@ -1232,7 +1232,7 @@ RiskUtil.printStackTrace(e);
 				else if (input.equals("startgame")) {
 					if (StringT.countTokens() >= 2 && StringT.countTokens() <= 4) {
 
-						int n=game.getPlayers().size();
+						int n=game.getPlayerManager().getNoPlayers();
 
 						int newgame_type = -1;
 						int newgame_cardType = -1;
@@ -1310,7 +1310,7 @@ RiskUtil.printStackTrace(e);
                                                                     // give me a array of random numbers
                                                                     Random r = new Random();
                                                                     int a = game.getNoMissions();
-                                                                    int b = game.getNoPlayers();
+                                                                    int b = game.getPlayerManager().getNoPlayers();
 
                                                                     StringBuffer outputa=new StringBuffer();
                                                                     for (int c=0; c< b ; c++) {
@@ -1514,7 +1514,7 @@ RiskUtil.printStackTrace(e);
                                                                     output = output + ((Player)v[c].getOwner()).getName() +" ("+v[c].getArmies() +")";
                                                                     if (game.getGameMode() == 2 && game.getSetupDone() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL) {
 
-                                                                            List players = game.getPlayers();
+                                                                            List players = game.getPlayerManager().getPlayers();
 
                                                                             for (int a=0; a< players.size() ; a++) {
 
@@ -2568,7 +2568,7 @@ RiskUtil.printStackTrace(e);
                     }
 		}
 
-		List Players = g.getPlayers();
+		List Players = g.getPlayerManager().getPlayers();
 		boolean setup = g.getSetupDone();
 
 		int num=0;
@@ -2678,14 +2678,7 @@ RiskUtil.printStackTrace(e);
 	}
 
 	public Player getCountryCapital(int c) {
-	    Country t = game.getCountryInt(c);
-	    List<Player> players = game.getPlayers();
-	    for (Player player: players) {
-	        if (player.getCapital() == t) {
-	            return player;
-	        }
-	    }
-	    return null;
+		return game.getPlayerManager().getPlayerByCapital(game.getCountryInt(c));
 	}
 
 	/**
@@ -2838,7 +2831,7 @@ RiskUtil.printStackTrace(e);
                 }
 
                 // get all the players and make all with the ip of the leaver become nutral
-                List players = game.getPlayers();
+                List players = game.getPlayerManager().getPlayers();
                 Player leaver=null,newNamePlayer=null;
                 for (int c=0; c< players.size(); c++) {
                     Player player = (Player)players.get(c);
@@ -2873,7 +2866,7 @@ RiskUtil.printStackTrace(e);
 
 	public Player findEmptySpot() {
             if (game!=null) {
-                List players = game.getPlayers();
+                List players = game.getPlayerManager().getPlayers();
                 for (int c=0; c< players.size() ; c++) {
                     Player player = (Player)players.get(c);
                     if ( player.getType() == Player.PLAYER_AI_CRAP && player.isAlive()) {

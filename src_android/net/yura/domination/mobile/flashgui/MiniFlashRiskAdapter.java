@@ -112,7 +112,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
     private boolean amOnlinePlayer() {
-        Player player = lobby==null?null:myRisk.getGame().getPlayer(lobby.whoAmI());
+        Player player = lobby==null?null:myRisk.getGame().getPlayerManager().getPlayer(lobby.whoAmI());
         return player!=null && player.isAlive();
     }
 

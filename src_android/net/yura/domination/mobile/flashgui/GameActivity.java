@@ -561,7 +561,7 @@ public class GameActivity extends Frame implements ActionListener {
     }
 
     private Player getSingleLocalHumanPlayer() {
-        List<Player> players = myrisk.getGame().getPlayers();
+        List<Player> players = myrisk.getGame().getPlayerManager().getPlayers();
         String myAddress = myrisk.getMyAddress();
         Player human1 = null, human2 = null;
         boolean tooMany1 = false, tooMany2 = false;
@@ -763,7 +763,7 @@ public class GameActivity extends Frame implements ActionListener {
 	if (myrisk.getLocalGame()) {
             RiskGame game = myrisk.getGame();
             if ("luca.map".equals(game.getMapFile())) {
-                List<Player> players = game.getPlayers();
+                List<Player> players = game.getPlayerManager().getPlayers();
                 if (players.size() == 6) {
                     Map<Integer,List<Player>> map = new HashMap();
                     for (Player player: players) {

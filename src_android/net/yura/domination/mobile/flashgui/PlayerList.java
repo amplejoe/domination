@@ -143,7 +143,7 @@ public class PlayerList extends List {
     }
 
     private Player getPlayerByColor(int color) {
-        for (Player player : (Collection<Player>)risk.getGame().getPlayers()) {
+        for (Player player : (Collection<Player>)risk.getGame().getPlayerManager().getPlayers()) {
             if (player.getColor() == color) {
                 return player;
             }
@@ -170,12 +170,12 @@ public class PlayerList extends List {
 
     @Override
     public int getSize() {
-        return risk.getGame().getNoPlayers();
+        return risk.getGame().getPlayerManager().getNoPlayers();
     }
 
     @Override
     public Object getElementAt(int index) {
-        return risk.getGame().getPlayers().get(index);
+        return risk.getGame().getPlayerManager().getPlayer(index);
     }
 
 }

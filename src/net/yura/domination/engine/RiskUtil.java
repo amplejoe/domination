@@ -237,7 +237,7 @@ public class RiskUtil {
 
 		if (prefs != null) {
 
-			List players = risk.getGame().getPlayers();
+			List players = risk.getGame().getPlayerManager().getPlayers();
 
 			for (int cc = 1; cc <= RiskGame.MAX_PLAYERS; cc++) {
 				String nameKey = "default.player" + cc

@@ -496,8 +496,8 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 Map<Country,Player> capitals = Collections.EMPTY_MAP;
                 if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetupDone() && game.getState() != RiskGame.STATE_SELECT_CAPITAL ) {
-                    capitals = new HashMap(game.getNoPlayers());
-                    List<Player> players = game.getPlayers();
+                    capitals = new HashMap(game.getPlayerManager().getNoPlayers());
+                    List<Player> players = game.getPlayerManager().getPlayers();
                     for (int c=0; c<players.size(); c++) {
                         Player player = players.get(c);
                         Country capital = player.getCapital();
@@ -751,7 +751,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 if (view == VIEW_CONNECTED_EMPIRE) {
 
-                        List players = game.getPlayers();
+                        List players = game.getPlayerManager().getPlayers();
 
                         allConnectedEmpires = new ArrayList();
 

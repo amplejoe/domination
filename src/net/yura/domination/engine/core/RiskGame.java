@@ -10,9 +10,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -111,7 +109,6 @@ public class RiskGame implements Serializable { // transient
 	private String cardsfile;
 	private int setup;
 
-	private Vector players;
 	private Country[] countries;
 	private Continent[] continents;
 	private Vector cards, usedCards;
@@ -149,6 +146,8 @@ public class RiskGame implements Serializable { // transient
 	 */
 
 	private PropertyManager propertyManager;
+	
+	private PlayerManager playerManager;
 
 	private Parser parser;
 
@@ -158,6 +157,7 @@ public class RiskGame implements Serializable { // transient
 	public RiskGame() throws Exception {
 		// Should be injected instead
 		propertyManager = new PropertyManager();
+		playerManager = new PlayerManager();
 		parser = new Parser(propertyManager);
 
 		// try {
@@ -172,9 +172,6 @@ public class RiskGame implements Serializable { // transient
 		setup = 0; // when setup reaches the number of players it goes into
 					// normal mode
 
-		players = new Vector();
-
-		currentPlayer = null;
 		gameState = STATE_NEW_GAME;
 		cardState = 0;
 
@@ -185,6 +182,10 @@ public class RiskGame implements Serializable { // transient
 		// simone=true;//false;
 
 		RiskUtil.RAND.setSeed(new Random().nextLong());
+	}
+	
+	public PlayerManager getPlayerManager() {
+		return playerManager;
 	}
 
 	public void addCommand(String a) {
@@ -222,17 +223,7 @@ public class RiskGame implements Serializable { // transient
 	public boolean addPlayer(int type, String name, int color, String a) {
 		if (gameState == STATE_NEW_GAME) { // && !name.equals("neutral") &&
 											// !(color==Color.gray)
-
-			for (int c = 0; c < players.size(); c++) {
-				if ((name.equals(((Player) players.elementAt(c)).getName()))
-						|| (color == ((Player) players.elementAt(c)).getColor()))
-					return false;
-			}
-
-			// System.out.print("Player added. Type: " +type+ "\n"); // testing
-			Player player = new Player(type, name, color, a);
-			players.add(player);
-			return true;
+			return playerManager.addPlayer(type, name, color, a);
 		} else
 			return false;
 	}
@@ -247,22 +238,7 @@ public class RiskGame implements Serializable { // transient
 	 */
 	public boolean delPlayer(String name) {
 		if (gameState == STATE_NEW_GAME) {
-
-			int n = -1;
-
-			for (int c = 0; c < players.size(); c++) {
-				if (name.equals(((Player) players.elementAt(c)).getName()))
-					n = c;
-			}
-			if (n == -1) {
-				// System.out.print("Error: No player found\n"); // testing
-				return false;
-			} else {
-				players.removeElementAt(n);
-				players.trimToSize();
-				// System.out.print("Player removed\n"); // testing
-				return true;
-			}
+			return playerManager.removePlayer(name);
 		} else
 			return false;
 
@@ -348,11 +324,11 @@ public class RiskGame implements Serializable { // transient
 			}
 
 			if (gameMode == MODE_SECRET_MISSION
-					&& missions.size() < players.size()) {
+					&& missions.size() < playerManager.getNoPlayers()) {
 				return;
 			}
 
-			int armies = (10 - players.size())
+			int armies = (10 - playerManager.getNoPlayers())
 					* Math.round(countries.length * 0.12f);
 
 			// System.out.print("armies="+ armies +"\n");
@@ -364,8 +340,8 @@ public class RiskGame implements Serializable { // transient
 			//
 			// System.out.print("Game Started\n"); // testing
 
-			for (int c = 0; c < players.size(); c++) {
-				((Player) players.elementAt(c)).addArmies(armies);
+			for (int c = 0; c < playerManager.getNoPlayers(); c++) {
+				playerManager.getPlayer(c).addArmies(armies);
 			}
 
 			gameState = STATE_PLACE_ARMIES;
@@ -384,7 +360,7 @@ public class RiskGame implements Serializable { // transient
 	 * @return Player Returns the current player in the game
 	 */
 	public Player setCurrentPlayer(int c) {
-		currentPlayer = (Player) players.get(c);
+		currentPlayer = playerManager.getPlayer(c);
 		return currentPlayer;
 
 	}
@@ -396,7 +372,7 @@ public class RiskGame implements Serializable { // transient
 	 *         of players
 	 */
 	public int getRandomPlayer() {
-		return RiskUtil.RAND.nextInt(players.size());
+		return RiskUtil.RAND.nextInt(playerManager.getNoPlayers());
 	}
 
 	/**
@@ -437,17 +413,17 @@ public class RiskGame implements Serializable { // transient
 
 			// work out who is the next player
 
+			int playersSize = playerManager.getNoPlayers();
 			while (true) {
-
-				for (int c = 0; c < players.size(); c++) {
-					if (currentPlayer == ((Player) players.elementAt(c))
-							&& players.size() == (c + 1)) {
-						currentPlayer = (Player) players.elementAt(0);
-						c = players.size();
-					} else if (currentPlayer == ((Player) players.elementAt(c))
-							&& players.size() != (c + 1)) {
-						currentPlayer = (Player) players.elementAt(c + 1);
-						c = players.size();
+				for (int c = 0; c < playersSize; c++) {
+					if (currentPlayer == playerManager.getPlayer(c)
+							&& playersSize == (c + 1)) {
+						currentPlayer = playerManager.getPlayer(0);
+						c = playersSize;
+					} else if (currentPlayer == playerManager.getPlayer(c)
+							&& playersSize != (c + 1)) {
+						currentPlayer = playerManager.getPlayer(c + 1);
+						c = playersSize;
 					}
 				}
 
@@ -1284,10 +1260,10 @@ public class RiskGame implements Serializable { // transient
 			if (currentPlayer == ((Country) currentPlayer.getCapital())
 					.getOwner()) {
 
-				for (int c = 0; c < players.size(); c++) {
+				for (int c = 0; c < playerManager.getNoPlayers(); c++) {
 
 					if (((Vector) currentPlayer.getTerritoriesOwned())
-							.contains((Country) ((Player) players.elementAt(c))
+							.contains((Country) playerManager.getPlayer(c)
 									.getCapital())) {
 						capitalcount++;
 					}
@@ -1296,7 +1272,7 @@ public class RiskGame implements Serializable { // transient
 
 			}
 
-			if (capitalcount == players.size()) {
+			if (capitalcount == playerManager.getNoPlayers()) {
 				result = true;
 			}
 
@@ -1607,10 +1583,10 @@ public class RiskGame implements Serializable { // transient
 					int s1 = Integer.parseInt(st.nextToken());
 					Player p;
 
-					if (s1 == 0 || s1 > players.size()) {
+					if (s1 == 0 || s1 > playerManager.getNoPlayers()) {
 						p = null;
 					} else {
-						p = (Player) players.elementAt(s1 - 1);
+						p = playerManager.getPlayer(s1 - 1);
 					}
 
 					int noc = Integer.parseInt(st.nextToken());
@@ -1669,7 +1645,7 @@ public class RiskGame implements Serializable { // transient
 
 					}
 
-					if (rawLoad || s1 <= players.size()) {
+					if (rawLoad || s1 <= playerManager.getNoPlayers()) {
 
 						// System.out.print(description+"\n"); // testing
 						Mission mission = new Mission(p, noc, noa, c1, c2, c3,
@@ -1883,7 +1859,7 @@ public class RiskGame implements Serializable { // transient
 	 *         otherwise
 	 */
 	public boolean getSetupDone() {
-		return setup == players.size();
+		return setup == playerManager.getNoPlayers();
 	}
 
 	/**
@@ -1918,22 +1894,13 @@ public class RiskGame implements Serializable { // transient
 	 * 
 	 * @return Vector Return all the players
 	 */
-	public Vector getPlayers() {
-		return players;
-	}
+	public List<Player> getPlayersStats() {
 
-	/**
-	 * Gets all the players
-	 * 
-	 * @return Vector Return all the players
-	 */
-	public Vector getPlayersStats() {
-
-		for (int c = 0; c < players.size(); c++) {
-			workOutEndGoStats((Player) players.elementAt(c));
+		for (int c = 0; c < playerManager.getNoPlayers(); c++) {
+			workOutEndGoStats((Player) playerManager.getPlayer(c));
 		}
 
-		return players;
+		return playerManager.getPlayers();
 	}
 
 	/**
@@ -2194,15 +2161,6 @@ public class RiskGame implements Serializable { // transient
 	}
 
 	/**
-	 * Gets the number of players in the game
-	 * 
-	 * @return int Return the number of number of players
-	 */
-	public int getNoPlayers() {
-		return players.size();
-	}
-
-	/**
 	 * Gets the countries in the game
 	 * 
 	 * @return Vector Return the Countries in the current game
@@ -2306,14 +2264,4 @@ public class RiskGame implements Serializable { // transient
 			return defender.getArmies();
 		}
 	}
-
-	public Player getPlayer(String name) {
-		for (Player player : (List<Player>) players) {
-			if (player.getName().equals(name)) {
-				return player;
-			}
-		}
-		return null;
-	}
-
 }

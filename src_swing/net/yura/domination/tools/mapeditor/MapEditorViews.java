@@ -870,7 +870,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
 			Object[] message = new Object[14];
 			message[0] = new JLabel("Player:");
-			message[1] = new JComboBox( map.getPlayers().toArray() );
+			message[1] = new JComboBox( map.getPlayerManager().getPlayers().toArray() );
 			((JComboBox)message[1]).insertItemAt(null,0);
 
 			message[2] = new JLabel("Number of countries:");

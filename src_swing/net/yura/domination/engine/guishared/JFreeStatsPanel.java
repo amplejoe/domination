@@ -72,7 +72,7 @@ public class JFreeStatsPanel extends JPanel {
     private XYItemRenderer getRenderer() {
         DefaultXYItemRenderer renderer = new DefaultXYItemRenderer();
         renderer.setBaseShapesVisible(false);
-        List<Player> players = risk.getGame().getPlayers();
+        List<Player> players = risk.getGame().getPlayerManager().getPlayers();
         for (int c=0;c<players.size();c++) {
             Color color = new Color(players.get(c).getColor());
             renderer.setSeriesPaint(c, color);

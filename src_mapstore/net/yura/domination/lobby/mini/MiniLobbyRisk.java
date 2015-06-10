@@ -81,7 +81,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
     public void objectForGame(Object object) {
         if (object instanceof RiskGame) {
             RiskGame thegame = (RiskGame)object;
-            Player player = thegame.getPlayer(lobby.whoAmI());
+            Player player = thegame.getPlayerManager().getPlayer(lobby.whoAmI());
             String address = player==null?"_watch_":player.getAddress();
             myrisk.setOnlinePlay(this);
             myrisk.setAddress(address);

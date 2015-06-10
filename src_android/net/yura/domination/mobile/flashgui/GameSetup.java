@@ -173,7 +173,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
     	int getNoOfPlayers() {
             if (localgame) {
-                return myrisk.getGame().getPlayers().size();
+                return myrisk.getGame().getPlayerManager().getNoPlayers();
             }
             else {
         	int count=0;
@@ -325,7 +325,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
 
     public void updatePlayers() {
 
-        java.util.List players = myrisk.getGame().getPlayers();
+        java.util.List players = myrisk.getGame().getPlayerManager().getPlayers();
 
         int[] count = new int[compTypes.length];
 
@@ -370,7 +370,7 @@ public class GameSetup extends Frame implements ChangeListener,ActionListener {
         }
         
         if (localgame) {
-            List players = myrisk.getGame().getPlayers();
+            List players = myrisk.getGame().getPlayerManager().getPlayers();
             int count=0;
             for (int c=0;c<players.size();c++) {
                 int ptype = ((Player)players.get(c)).getType();

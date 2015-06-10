@@ -265,7 +265,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 				if (game != null) {
 
-					Vector players = game.getPlayers();
+					List players = game.getPlayerManager().getPlayers();
 
 					if (players != null) {
 
@@ -282,7 +282,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			public Object getValueAt(int row, int col) {
 
-				Player player = (Player)myrisk.getGame().getPlayers().elementAt(row);
+				Player player = (Player)myrisk.getGame().getPlayerManager().getPlayer(row);
 
 				switch(col) {
 
@@ -318,7 +318,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
                         @Override
                         public void setValueAt(Object aValue, int row, int col) {
-                            Player player = (Player)myrisk.getGame().getPlayers().elementAt(row);
+                            Player player = (Player)myrisk.getGame().getPlayerManager().getPlayer(row);
 
                             try {
                                 String name = col==0?String.valueOf(aValue):player.getName();

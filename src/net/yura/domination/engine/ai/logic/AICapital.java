@@ -130,7 +130,7 @@ public class AICapital extends AIDomination {
 				}
 				break;
 			}
-		} else if (r.nextInt(game.getPlayers().size()) == 0) {
+		} else if (r.nextInt(game.getPlayerManager().getNoPlayers()) == 0) {
 			//defend the capital more - ensures that when playing with a small number of players
 			//the initial capital should be well defended
 			Country c = findCapital();
@@ -230,7 +230,7 @@ public class AICapital extends AIDomination {
 		for (int i = 0; i < v.size(); i++) {
 			Country c = v.get(i);
 			int val = scoreCountry(c);
-			val -= c.getArmies()/game.getPlayers().size();
+			val -= c.getArmies()/game.getPlayerManager().getNoPlayers();
 			if (val < score || (val == score && r.nextBoolean())) {
 				score = val;
 				result = c;

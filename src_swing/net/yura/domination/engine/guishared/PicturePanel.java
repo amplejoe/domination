@@ -441,7 +441,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                         Stroke old = g2.getStroke();
 			g2.setStroke(new BasicStroke( stroke ));
-			List players = game.getPlayers();
+			List players = game.getPlayerManager().getPlayers();
 
 			for (int c=0; c< players.size() ; c++) {
 
@@ -622,7 +622,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		if (view == VIEW_CONNECTED_EMPIRE) {
 
-			List players = game.getPlayers();
+			List players = game.getPlayerManager().getPlayers();
 
 			allConnectedEmpires = new ArrayList();
 

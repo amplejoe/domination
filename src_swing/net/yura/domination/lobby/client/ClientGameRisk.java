@@ -318,7 +318,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 	public void gameObject(Object object) {
             if (object instanceof RiskGame) {
                 RiskGame thegame = (RiskGame)object;
-                Player player = thegame.getPlayer(lgml.whoAmI());
+                Player player = thegame.getPlayerManager().getPlayer(lgml.whoAmI());
                 String address = player==null?"_watch_":player.getAddress();
                 myrisk.setOnlinePlay(this);
                 myrisk.setAddress(address);
@@ -350,7 +350,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 
         // TODO call this method when someone is killed in the game
         private void updateButtons() {
-            Player player = myrisk.getGame().getPlayer(lgml.whoAmI());
+            Player player = myrisk.getGame().getPlayerManager().getPlayer(lgml.whoAmI());
             updateButton(player!=null && player.isAlive(), myrisk.findEmptySpot() != null );
         }
 

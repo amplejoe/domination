@@ -245,8 +245,8 @@ public class AIDomination extends AISubmissive {
 		double check = -Double.MAX_VALUE;
 		Country toPlace = null;
 		Map<Player, Integer> players = new HashMap<Player, Integer>();
-		for (int i = 0; i < this.game.getPlayers().size(); i++) {
-			players.put((Player) this.game.getPlayers().get(i), Integer.valueOf(i));
+		for (int i = 0; i < this.game.getPlayerManager().getNoPlayers(); i++) {
+			players.put((Player) this.game.getPlayerManager().getPlayer(i), Integer.valueOf(i));
 		}
 
 		List<Continent> conts = new ArrayList<Continent>(Arrays.asList(cont));
@@ -266,7 +266,7 @@ public class AIDomination extends AISubmissive {
 
 			boolean hasFree = false;
 			Country preferedCountry = null;
-			int[] troops = new int[game.getPlayers().size()];
+			int[] troops = new int[game.getPlayerManager().getNoPlayers()];
 
 			boolean hasPlacement = false;
 			Player otherOwner = null;
@@ -322,7 +322,7 @@ public class AIDomination extends AISubmissive {
 				score *= continentValue;
 				score /= bestCountryScore;
 
-				Player p = (Player)game.getPlayers().get(j);
+				Player p = (Player)game.getPlayerManager().getPlayer(j);
 
 				if (p != this.player) {
 					//always block
@@ -417,8 +417,8 @@ public class AIDomination extends AISubmissive {
 		//kill switch
 		if (attack && (game.getCurrentPlayer().getStatistics().size() > MAX_AI_TURNS && (gameState.me.playerValue < gameState.orderedPlayers.get(gameState.orderedPlayers.size() - 1).playerValue || r.nextBoolean()))) {
 			boolean keepPlaying = false;
-			for (int i = 0; i < game.getPlayers().size(); i++) {
-				Player p = (Player)game.getPlayers().get(i);
+			for (int i = 0; i < game.getPlayerManager().getNoPlayers(); i++) {
+				Player p = (Player)game.getPlayerManager().getPlayer(i);
 				if (p.getType() == Player.PLAYER_HUMAN && !p.getTerritoriesOwned().isEmpty()) {
 					keepPlaying = true;
 					break;
@@ -1285,8 +1285,8 @@ public class AIDomination extends AISubmissive {
 	 */
 	protected double getContinentValue(Continent co) {
 		int players = 0;
-		for (int i = 0; i < game.getPlayers().size(); i++) {
-			if (!((Player)game.getPlayers().get(i)).getTerritoriesOwned().isEmpty()) {
+		for (int i = 0; i < game.getPlayerManager().getNoPlayers(); i++) {
+			if (!((Player)game.getPlayerManager().getPlayer(i)).getTerritoriesOwned().isEmpty()) {
 				players++;
 			}
 		}
@@ -2111,7 +2111,7 @@ public class AIDomination extends AISubmissive {
      * @return
      */
     public GameState getGameState(Player p, boolean excludeCards) {
-    	List<Player> players = game.getPlayers();
+    	List<Player> players = game.getPlayerManager().getPlayers();
     	GameState g = new GameState();
     	Continent[] c = game.getContinents();
     	if (player.getCapital() == null) {

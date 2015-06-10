@@ -183,7 +183,7 @@ public class ServerGameRisk extends TurnBasedGame {
                 RiskGame riskGame = (RiskGame)oin.readObject();
 
                 String address=myrisk.getAddress();
-                List<Player> players = riskGame.getPlayers();
+                List<Player> players = riskGame.getPlayerManager().getPlayers();
                 for (Player player:players) {
                     if (player.getType()!=Player.PLAYER_HUMAN) {
                         player.setAddress(address);
@@ -222,7 +222,7 @@ public class ServerGameRisk extends TurnBasedGame {
 
         private String getPlayerId(String username) {
             RiskGame game = myrisk.getGame();
-            List<Player> players = game.getPlayers();
+            List<Player> players = game.getPlayerManager().getPlayers();
             for (Player player:players) {
                 if (player.getType()==Player.PLAYER_HUMAN && player.getName().equals(username)) {
                     return player.getAddress();
@@ -273,7 +273,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		//String currentAddress = myrisk.getGame().getCurrentPlayer().getAddress();
 
 		if (playerid != null) {
-                        List<Player> players = (List<Player>)myrisk.getGame().getPlayers();
+                        List<Player> players = (List<Player>)myrisk.getGame().getPlayerManager().getPlayers();
 			//myrisk.renamePlayer(username,newName,myrisk.getAddress(),Player.PLAYER_AI_CRAP);
 
                         String newName = username+"-Resigned";
@@ -382,7 +382,7 @@ public class ServerGameRisk extends TurnBasedGame {
             if (player==null) {
                 throw new RuntimeException("no AI CRAP found in game");
             }
-            String playerId = "player"+( myrisk.getGame().getPlayers().indexOf(player) +1);
+            String playerId = "player"+( myrisk.getGame().getPlayerManager().getPlayers().indexOf(player) +1);
             String oldName = player.getName();
             sendRename(oldName,newuser,playerId,Player.PLAYER_HUMAN,true);
         }
@@ -407,7 +407,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		}
                 String name="???";
                 int best=-1;
-                List<Player> players = game.getPlayers();
+                List<Player> players = game.getPlayerManager().getPlayers();
                 for (int c=0;c<players.size();c++) {
                         Player player = players.get(c);
                         // player.getType() == Player.PLAYER_HUMAN &&

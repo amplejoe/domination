@@ -91,7 +91,7 @@ public class CardsDialog extends Frame implements ActionListener {
             final String text;
             int cardsMode = myrisk.getGame().getCardMode();
             int cardsWithPlayers = 0;
-            for (Player player: (List<Player>) myrisk.getGame().getPlayers()) {
+            for (Player player: (List<Player>) myrisk.getGame().getPlayerManager().getPlayers()) {
                 cardsWithPlayers += player.getCards().size();
             }
 
