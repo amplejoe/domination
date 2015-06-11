@@ -3,15 +3,20 @@
 package net.yura.domination.ui.flashgui;
 
 import javax.swing.JFrame;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+
 import javax.swing.JPanel;
+
 import java.awt.Toolkit;
 import java.awt.Dimension;
+
 import javax.swing.JLayeredPane;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+
 import java.awt.Insets;
 import java.awt.font.TextLayout;
 import java.awt.font.FontRenderContext;
@@ -27,16 +32,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+
 import javax.swing.AbstractButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Country;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.guishared.PicturePanel;
@@ -298,10 +305,10 @@ public class GameFrame extends JFrame implements KeyListener {
 			FontRenderContext frc = g2.getFontRenderContext();
 			Font font = g2.getFont();
 
-			if ( gameState==RiskGame.STATE_NEW_GAME ) {
+			if ( gameState==IRiskGame.STATE_NEW_GAME ) {
 				tl = new TextLayout( resb.getString("game.pleasewait") , font, frc);
 			}
-			else if ( (gameState==RiskGame.STATE_TRADE_CARDS || gameState==RiskGame.STATE_PLACE_ARMIES || gameState==RiskGame.STATE_ATTACKING || gameState==RiskGame.STATE_SELECT_CAPITAL || gameState==RiskGame.STATE_FORTIFYING ) && !(note.equals("")) ) {
+			else if ( (gameState==IRiskGame.STATE_TRADE_CARDS || gameState==IRiskGame.STATE_PLACE_ARMIES || gameState==IRiskGame.STATE_ATTACKING || gameState==IRiskGame.STATE_SELECT_CAPITAL || gameState==IRiskGame.STATE_FORTIFYING ) && !(note.equals("")) ) {
 				tl = new TextLayout( note , font, frc);
 			}
 
@@ -639,7 +646,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
                 // if for some strange reason this dialog is open and we need some other input, close it
                 // this can happen if we timeout in a game during battle won move stage
-                if (gameState!=RiskGame.STATE_BATTLE_WON && movedialog.isVisible()) {
+                if (gameState!=IRiskGame.STATE_BATTLE_WON && movedialog.isVisible()) {
                     movedialog.exitForm();
                 }
 
@@ -648,7 +655,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		switch (gameState) {
 
-			case RiskGame.STATE_TRADE_CARDS: {
+			case IRiskGame.STATE_TRADE_CARDS: {
 
 				// after wiping out someone if you go into trade mode
 				pp.setC1(255);
@@ -660,14 +667,14 @@ public class GameFrame extends JFrame implements KeyListener {
                                 note = getArmiesLeftText();
 				break;
 			}
-			case RiskGame.STATE_PLACE_ARMIES: {
+			case IRiskGame.STATE_PLACE_ARMIES: {
 				if ( !myrisk.getGame().NoEmptyCountries() ) {
 					goButtonText = resb.getString("game.button.go.autoplace");
 				}
                                 note = getArmiesLeftText();
 				break;
 			}
-			case RiskGame.STATE_ATTACKING: {
+			case IRiskGame.STATE_ATTACKING: {
 
 				pp.setC1(255);
 				pp.setC2(255);
@@ -678,7 +685,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
 				break;
 			}
-			case RiskGame.STATE_FORTIFYING: {
+			case IRiskGame.STATE_FORTIFYING: {
 
 				note = resb.getString("game.note.selectsource");
 
@@ -686,14 +693,14 @@ public class GameFrame extends JFrame implements KeyListener {
 
 				break;
 			}
-			case RiskGame.STATE_END_TURN: {
+			case IRiskGame.STATE_END_TURN: {
 
 				goButtonText = resb.getString("game.button.go.endgo");
 
 				break;
 
 			}
-			case RiskGame.STATE_GAME_OVER: {
+			case IRiskGame.STATE_GAME_OVER: {
                                 if (myrisk.getGame().canContinue()) {
                                     goButtonText = resb.getString("game.button.go.continue");
                                 }
@@ -708,7 +715,7 @@ public class GameFrame extends JFrame implements KeyListener {
 				break;
 
 			}
-			case RiskGame.STATE_SELECT_CAPITAL: {
+			case IRiskGame.STATE_SELECT_CAPITAL: {
 
 				note = resb.getString("game.note.happyok");
 
@@ -716,9 +723,9 @@ public class GameFrame extends JFrame implements KeyListener {
 
 				break;
 			}
-			case RiskGame.STATE_BATTLE_WON: {
+			case IRiskGame.STATE_BATTLE_WON: {
 
-                                RiskGame game = myrisk.getGame();
+                                IRiskGame game = myrisk.getGame();
                                 openMove(game.getMustMove(), game.getAttacker().getColor(), game.getDefender().getColor(), false);
 				movedialog.setVisible(true);
 
@@ -756,7 +763,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
                 if (localGame) {
 
-                    if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
+                    if (gameState!=IRiskGame.STATE_DEFEND_YOURSELF) {
                         undobutton.setEnabled(true);
                     }
                     savebutton.setEnabled(true);
@@ -842,20 +849,20 @@ public class GameFrame extends JFrame implements KeyListener {
 
 		//c1Id = -1;
 
-		if (gameState==RiskGame.STATE_ROLLING || gameState==RiskGame.STATE_DEFEND_YOURSELF) {
+		if (gameState==IRiskGame.STATE_ROLLING || gameState==IRiskGame.STATE_DEFEND_YOURSELF) {
 
 			//this does not close it, just resets its params
 			battledialog.blockInput();
 		}
 
 
-		if (gameState==RiskGame.STATE_BATTLE_WON || gameState==RiskGame.STATE_FORTIFYING) {
+		if (gameState==IRiskGame.STATE_BATTLE_WON || gameState==IRiskGame.STATE_FORTIFYING) {
 
 			// this hides the dailog
 			movedialog.exitForm();
 		}
 
-		if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetupDone() ) { noInput(); }
+		if (gameState!=IRiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetupDone() ) { noInput(); }
 
 	}
 
@@ -915,7 +922,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
             Object oldnote = note;
 
-            if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+            if (gameState == IRiskGame.STATE_PLACE_ARMIES) {
                 if (countries.length==1) {
                     if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
                         go( "placearmies " + countries[0] + " 1" );
@@ -925,7 +932,7 @@ public class GameFrame extends JFrame implements KeyListener {
                     }
                 }
             }
-            else if (gameState == RiskGame.STATE_ATTACKING) {
+            else if (gameState == IRiskGame.STATE_ATTACKING) {
 
                 if (countries.length==0) {
                     note=resb.getString("game.note.selectattacker");
@@ -939,7 +946,7 @@ public class GameFrame extends JFrame implements KeyListener {
                 }
 
             }
-            else if (gameState == RiskGame.STATE_FORTIFYING) {
+            else if (gameState == IRiskGame.STATE_FORTIFYING) {
                 if (countries.length==0) {
                     note=resb.getString("game.note.selectsource");
                 }
@@ -968,7 +975,7 @@ public class GameFrame extends JFrame implements KeyListener {
 
                 }
             }
-            else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+            else if (gameState == IRiskGame.STATE_SELECT_CAPITAL) {
                 // do nothing ??
             }
 
@@ -997,7 +1004,7 @@ public class GameFrame extends JFrame implements KeyListener {
 	 */
 	private void displayCards() {
 
-		cardsDialog.setup( (gameState==RiskGame.STATE_TRADE_CARDS) );
+		cardsDialog.setup( (gameState==IRiskGame.STATE_TRADE_CARDS) );
 
 		cardsDialog.setVisible(true);
 
@@ -1103,25 +1110,25 @@ public class GameFrame extends JFrame implements KeyListener {
 	 * the user has clicked the "go" button
 	 */
 	private void goOn() {
-		if (gameState==RiskGame.STATE_TRADE_CARDS) {
+		if (gameState==IRiskGame.STATE_TRADE_CARDS) {
 			go("endtrade");
 		}
-		else if (gameState==RiskGame.STATE_PLACE_ARMIES) {
+		else if (gameState==IRiskGame.STATE_PLACE_ARMIES) {
 			go("autoplace");
 		}
-		else if (gameState==RiskGame.STATE_ATTACKING) {
+		else if (gameState==IRiskGame.STATE_ATTACKING) {
 			pp.setC1(255);
 			go("endattack");
 		}
-		else if (gameState==RiskGame.STATE_FORTIFYING) {
+		else if (gameState==IRiskGame.STATE_FORTIFYING) {
 			pp.setC1(255);
 			go("nomove");
 		}
-		else if (gameState==RiskGame.STATE_END_TURN) {
+		else if (gameState==IRiskGame.STATE_END_TURN) {
 			go("endgo");
 		}
-		else if (gameState==RiskGame.STATE_GAME_OVER) {
-                        RiskGame game = myrisk.getGame();
+		else if (gameState==IRiskGame.STATE_GAME_OVER) {
+                        IRiskGame game = myrisk.getGame();
                         if (game!=null && game.canContinue()) {
                             go("continue");
                         }
@@ -1129,7 +1136,7 @@ public class GameFrame extends JFrame implements KeyListener {
                             closeleave();
                         }
 		}
-		else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+		else if (gameState == IRiskGame.STATE_SELECT_CAPITAL) {
                         int c1Id = pp.getC1();
 			pp.setC1(255);
 			go("capital " + c1Id);
@@ -1176,15 +1183,15 @@ public class GameFrame extends JFrame implements KeyListener {
 			{
 				case KeyEvent.VK_C:
 					//cards
-					if (gameState!=RiskGame.STATE_NEW_GAME) this.displayCards();
+					if (gameState!=IRiskGame.STATE_NEW_GAME) this.displayCards();
 					break;
 				case KeyEvent.VK_M:
 					//mission
-					if (gameState!=RiskGame.STATE_NEW_GAME) this.displayMission();
+					if (gameState!=IRiskGame.STATE_NEW_GAME) this.displayMission();
 					break;
 				case KeyEvent.VK_U:
 					//undo
-					if (gameState!=RiskGame.STATE_NEW_GAME && gameState!=RiskGame.STATE_DEFEND_YOURSELF) this.doUndo();
+					if (gameState!=IRiskGame.STATE_NEW_GAME && gameState!=IRiskGame.STATE_DEFEND_YOURSELF) this.doUndo();
 					break;
 				case KeyEvent.VK_F10:
 					this.displayMenu();
@@ -1192,7 +1199,7 @@ public class GameFrame extends JFrame implements KeyListener {
 					break;
 				case KeyEvent.VK_G:
 					//go button
-					if (gameState!=RiskGame.STATE_NEW_GAME) this.goOn();
+					if (gameState!=IRiskGame.STATE_NEW_GAME) this.goOn();
 					break;
 			}
 		//}

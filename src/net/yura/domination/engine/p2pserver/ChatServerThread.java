@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.LinkedList;
+
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.RiskGame;
 
 /**
@@ -62,9 +64,9 @@ public class ChatServerThread extends Thread {
 			int index = hello.indexOf(' ');
 			String version = hello.substring(0,index);
                         
-                        if (!RiskGame.NETWORK_VERSION.equals(version)) {
+                        if (!IRiskGame.NETWORK_VERSION.equals(version)) {
 
-                            outChat.println( "ERROR version missmatch, server: "+RiskGame.NETWORK_VERSION+", and client: "+version );
+                            outChat.println( "ERROR version missmatch, server: "+IRiskGame.NETWORK_VERSION+", and client: "+version );
 
                         }
                         else {

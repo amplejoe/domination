@@ -19,6 +19,7 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
 import net.yura.domination.engine.core.Player;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.MapPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -139,7 +140,7 @@ public class PicturePanel extends ImageView implements MapPanel {
          */
         public void load() throws IOException {
 
-                RiskGame game = myrisk.getGame();
+                IRiskGame game = myrisk.getGame();
 
                 // clean up before we load new images
                 //original = null;
@@ -185,7 +186,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                 int mH = m.getHeight();
 
 
-                RiskGame game = myrisk.getGame();
+                IRiskGame game = myrisk.getGame();
                 int noc = game.getCountries().length;
 
                 BALL_SIZE = game.getPropertyManager().getCircleSize();
@@ -386,7 +387,7 @@ public class PicturePanel extends ImageView implements MapPanel {
                                 drawHighLightImage(g,cc);
                         }
 
-                        RiskGame game = myrisk.getGame();
+                        IRiskGame game = myrisk.getGame();
                         int state = game.getState();
 
                         if (state==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
@@ -442,7 +443,7 @@ public class PicturePanel extends ImageView implements MapPanel {
          * @param g2 a 2D Graphics object.
          */
         public void drawArmies(Graphics2D g2,double scale) {
-                RiskGame game = myrisk.getGame();
+                IRiskGame game = myrisk.getGame();
                 int state = game.getState();
 
                 int ballSize = (int)(BALL_SIZE*scale);
@@ -742,7 +743,7 @@ public class PicturePanel extends ImageView implements MapPanel {
 
                 if (tempimg == null) return;
 
-                RiskGame game = myrisk.getGame();
+                IRiskGame game = myrisk.getGame();
 
                 Graphics zg = tempimg.getGraphics();
                 zg.drawImage(img ,0 ,0, 0 );

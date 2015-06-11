@@ -8,11 +8,13 @@ import java.awt.image.RGBImageFilter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+
 import javax.imageio.ImageIO;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.mobile.io.kxml2.KXmlParser;
 
 /**
@@ -31,7 +33,7 @@ public class TegMapLoader {
         }
     }
     
-    public void load(File xmlfile,RiskGame map,MapEditor editor) throws Exception {
+    public void load(File xmlfile,IRiskGame map,MapEditor editor) throws Exception {
 
         BufferedImage board=null,imgMap=null;
 

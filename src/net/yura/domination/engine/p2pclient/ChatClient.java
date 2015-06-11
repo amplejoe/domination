@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
 import net.yura.domination.engine.OnlineRisk;
 import net.yura.domination.engine.Risk;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.RiskGame;
 
 /**
@@ -37,7 +39,7 @@ public class ChatClient implements OnlineRisk {
                 myReader = new ChatDisplayThread(risk, inChat);
                 myReader.start();
 
-                outChat.println( RiskGame.NETWORK_VERSION +" "+uid+" "+RiskGame.getDefaultMap() );
+                outChat.println( IRiskGame.NETWORK_VERSION +" "+uid+" "+RiskGame.getDefaultMap() );
 
         }
 

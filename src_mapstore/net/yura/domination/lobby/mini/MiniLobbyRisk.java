@@ -5,9 +5,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
+
 import net.yura.domination.engine.OnlineRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -79,7 +81,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
     private boolean openGame;
 
     public void objectForGame(Object object) {
-        if (object instanceof RiskGame) {
+        if (object instanceof IRiskGame) {
             RiskGame thegame = (RiskGame)object;
             Player player = thegame.getPlayerManager().getPlayer(lobby.whoAmI());
             String address = player==null?"_watch_":player.getAddress();

@@ -30,6 +30,7 @@ import java.util.prefs.Preferences;
 
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.MapTranslator;
@@ -99,7 +100,7 @@ public class RiskUtil {
 		streamOpener.openDocs(docs);
 	}
 
-	public static void saveFile(String file, RiskGame aThis)
+	public static void saveFile(String file, IRiskGame aThis)
 			throws Exception {
 		streamOpener.saveGameFile(file, aThis);
 	}
@@ -124,25 +125,25 @@ public class RiskUtil {
 		String type = "";
 
 		switch (gameMode) {
-		case RiskGame.MODE_DOMINATION:
+		case IRiskGame.MODE_DOMINATION:
 			type = "domination";
 			break;
-		case RiskGame.MODE_CAPITAL:
+		case IRiskGame.MODE_CAPITAL:
 			type = "capital";
 			break;
-		case RiskGame.MODE_SECRET_MISSION:
+		case IRiskGame.MODE_SECRET_MISSION:
 			type = "mission";
 			break;
 		}
 
 		switch (cardsMode) {
-		case RiskGame.CARD_INCREASING_SET:
+		case IRiskGame.CARD_INCREASING_SET:
 			type += " increasing";
 			break;
-		case RiskGame.CARD_FIXED_SET:
+		case IRiskGame.CARD_FIXED_SET:
 			type += " fixed";
 			break;
-		case RiskGame.CARD_ITALIANLIKE_SET:
+		case IRiskGame.CARD_ITALIANLIKE_SET:
 			type += " italianlike";
 			break;
 		}
@@ -209,7 +210,7 @@ public class RiskUtil {
 
 	public static void loadPlayers(Risk risk, Class uiclass) {
 		Properties playerSettings = getPlayerSettings(risk, uiclass);
-		for (int cc = 1; cc <= RiskGame.MAX_PLAYERS; cc++) {
+		for (int cc = 1; cc <= IRiskGame.MAX_PLAYERS; cc++) {
 			String name = playerSettings
 					.getProperty("default.player" + cc
 							+ ".name");
@@ -239,7 +240,7 @@ public class RiskUtil {
 
 			List players = risk.getGame().getPlayerManager().getPlayers();
 
-			for (int cc = 1; cc <= RiskGame.MAX_PLAYERS; cc++) {
+			for (int cc = 1; cc <= IRiskGame.MAX_PLAYERS; cc++) {
 				String nameKey = "default.player" + cc
 						+ ".name";
 				String colorKey = "default.player" + cc
@@ -290,7 +291,7 @@ public class RiskUtil {
 
 		if (prefs != null) {
 
-			for (int cc = 1; cc <= RiskGame.MAX_PLAYERS; cc++) {
+			for (int cc = 1; cc <= IRiskGame.MAX_PLAYERS; cc++) {
 				String nameKey = "default.player" + cc
 						+ ".name";
 				String colorKey = "default.player" + cc
@@ -537,7 +538,7 @@ public class RiskUtil {
 
 	}
 
-	public static void saveGameLog(File logFile, RiskGame game)
+	public static void saveGameLog(File logFile, IRiskGame game)
 			throws IOException {
 		FileWriter fileout = new FileWriter(logFile);
 		BufferedWriter buffer = new BufferedWriter(fileout);
@@ -937,14 +938,14 @@ public class RiskUtil {
 			c1 = n4;
 		}
 
-		if (cardMode == RiskGame.CARD_INCREASING_SET) {
+		if (cardMode == IRiskGame.CARD_INCREASING_SET) {
 			if (c1.equals(Card.WILDCARD)
 					|| (c1.equals(c2) && c1.equals(c3))
 					|| (!c1.equals(c2) && !c1.equals(c3) && !c2
 							.equals(c3))) {
 				armies = getNewCardState(cardState);
 			}
-		} else if (cardMode == RiskGame.CARD_FIXED_SET) {
+		} else if (cardMode == IRiskGame.CARD_FIXED_SET) {
 			// ALL THE SAME or 'have 1 wildcard and 2 the same'
 			if ((c1.equals(c2) || c1.equals(Card.WILDCARD))
 					&& c2.equals(c3)) {

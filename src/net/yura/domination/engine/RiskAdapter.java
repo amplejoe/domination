@@ -2,7 +2,7 @@
 
 package net.yura.domination.engine;
 
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 
 /**
  * <p> Risk Adapter </p>
@@ -18,7 +18,7 @@ public abstract class RiskAdapter implements RiskListener {
     public void newGame(boolean t) {}
     public void startGame(boolean s) {}
     public void closeGame() {}
-    public void showMapPic(RiskGame p) {}
+    public void showMapPic(IRiskGame p) {}
     public void showCardsFile(String c, boolean m) {}
     public void serverState(boolean s) {}
     public void openBattle(int c1num, int c2num) {}

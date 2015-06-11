@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -40,8 +41,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.ui.flashgui.NewGameFrame;
 import net.yura.lobby.model.Game;
@@ -612,18 +614,18 @@ aialabel.setVisible(false);
 
 			int sum = a + b + c + d;
 
-			if (sum >=2 && sum <= RiskGame.MAX_PLAYERS) {
+			if (sum >=2 && sum <= IRiskGame.MAX_PLAYERS) {
 
                                 int gameMode;
                                 int cardsMode;
                             
-                                if (domination.isSelected()) gameMode = RiskGame.MODE_DOMINATION;
-                                else if (capital.isSelected()) gameMode = RiskGame.MODE_CAPITAL;
-                                else gameMode = RiskGame.MODE_SECRET_MISSION; // if (mission.isSelected())
+                                if (domination.isSelected()) gameMode = IRiskGame.MODE_DOMINATION;
+                                else if (capital.isSelected()) gameMode = IRiskGame.MODE_CAPITAL;
+                                else gameMode = IRiskGame.MODE_SECRET_MISSION; // if (mission.isSelected())
 
-                                if (increasing.isSelected()) cardsMode = RiskGame.CARD_INCREASING_SET;
-                                else if (fixed.isSelected()) cardsMode = RiskGame.CARD_FIXED_SET;
-                                else cardsMode = RiskGame.CARD_ITALIANLIKE_SET; // if (italian.isSelected())
+                                if (increasing.isSelected()) cardsMode = IRiskGame.CARD_INCREASING_SET;
+                                else if (fixed.isSelected()) cardsMode = IRiskGame.CARD_FIXED_SET;
+                                else cardsMode = IRiskGame.CARD_ITALIANLIKE_SET; // if (italian.isSelected())
 
 				options = RiskUtil.createGameString(b, c, d, gameMode, cardsMode, AutoPlaceAll.isSelected(), recycle.isSelected(), riskmap.getFileName() );
 

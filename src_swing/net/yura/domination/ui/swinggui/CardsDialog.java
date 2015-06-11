@@ -21,17 +21,19 @@ import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -231,10 +233,10 @@ public class CardsDialog extends JDialog {
 
     public String getNumArmies() {
 	// return " Next trade recieve " + myrisk.getNewCardState() + " troops";
-	if (myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET) {
+	if (myrisk.getGame().getCardMode()==IRiskGame.CARD_FIXED_SET) {
             return resb.getString("cards.fixed");
 	}
-        else if (myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+        else if (myrisk.getGame().getCardMode()==IRiskGame.CARD_ITALIANLIKE_SET) {
             return resb.getString("cards.italianlike");
 	}
 	else {

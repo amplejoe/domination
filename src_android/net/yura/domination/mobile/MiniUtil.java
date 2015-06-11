@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.flashgui.DominationMain;
 import net.yura.grasshopper.BugUIInfo;
@@ -227,7 +227,7 @@ public class MiniUtil {
         return FileUtil.ROOT_PREX + getSaveGameDir().toString() +"/";
     }
 
-    public static String getSaveGameName(RiskGame game) {
+    public static String getSaveGameName(IRiskGame game) {
         String file = game.getMapFile();
         if (file.endsWith(".map")) {
             file = file.substring(0, file.length() - 4);

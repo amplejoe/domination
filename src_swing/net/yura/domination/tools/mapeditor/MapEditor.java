@@ -66,10 +66,12 @@ import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.PropertyManager;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.RiskGameFactory;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.ui.swinggui.SwingGUIPanel;
@@ -86,7 +88,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	private final static int ZOOM_MIN = 1;
 
 	private Risk myrisk;
-	private RiskGame myMap;
+	private IRiskGame myMap;
 	private PropertyManager propertyManager;
         private String fileName;
         private File imgFile;
@@ -416,7 +418,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
-	public void setNewMap(RiskGame m,BufferedImage ip,BufferedImage im,String fname,File img) {
+	public void setNewMap(IRiskGame m,BufferedImage ip,BufferedImage im,String fname,File img) {
 
 		myMap = m;
 		propertyManager = myMap.getPropertyManager();
@@ -445,10 +447,10 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 	}
 
-	public RiskGame makeNewMap() throws Exception {
-		RiskGame rg = new RiskGame();
+	public IRiskGame makeNewMap() throws Exception {
+		IRiskGame rg = RiskGameFactory.create();
 
-		for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
+		for (int c=1;c<=IRiskGame.MAX_PLAYERS;c++) {
 			rg.addPlayer(
 				Player.PLAYER_HUMAN,
 				"PLAYER"+c,
@@ -460,7 +462,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
         
         private void loadMap(String name) throws Exception {
-            RiskGame map = makeNewMap();
+            IRiskGame map = makeNewMap();
             map.setMapfile(name); // this is here just to update the cards option, also set the name and version
             map.loadMap();
             map.loadCards(true);
@@ -505,7 +507,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		if (a.getActionCommand().equals("newmap")) {
 			try {
-				RiskGame map = makeNewMap();
+				IRiskGame map = makeNewMap();
 				map.setupNewMap();
 
 				BufferedImage ipic = new BufferedImage(PicturePanel.PP_X , PicturePanel.PP_Y, BufferedImage.TYPE_INT_BGR);
@@ -1174,7 +1176,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			return "0";
 
 		}
-		if (c == RiskGame.ANY_CONTINENT) {
+		if (c == IRiskGame.ANY_CONTINENT) {
 
 			return "*";
 

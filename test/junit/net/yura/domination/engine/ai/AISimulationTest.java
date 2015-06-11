@@ -9,8 +9,8 @@ import net.yura.domination.engine.RiskAdapter;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.ai.logic.AIDomination;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
 
 public class AISimulationTest extends TestCase{
 	
@@ -83,7 +83,7 @@ public class AISimulationTest extends TestCase{
 		risk.parser("startgame domination fixed recycle");
 		
 		synchronized (risk) {
-			while (risk.getGame() == null || risk.getGame().getState() != RiskGame.STATE_GAME_OVER) {
+			while (risk.getGame() == null || risk.getGame().getState() != IRiskGame.STATE_GAME_OVER) {
 				risk.wait();
 			}
 			Player p = risk.getGame().getCurrentPlayer();

@@ -14,7 +14,7 @@ import javax.microedition.io.Connector;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.mobile.gui.Midlet;
 import net.yura.mobile.io.FileUtil;
 
@@ -47,7 +47,7 @@ public class RiskMiniIO implements RiskIO {
         return FileUtil.getInputStreamFromFileConnector(fileUrl);
     }
 
-    public void saveGameFile(String fileUrl, RiskGame obj) throws Exception {
+    public void saveGameFile(String fileUrl, IRiskGame obj) throws Exception {
         OutputStream fileout = FileUtil.getWriteFileConnection(fileUrl).openOutputStream();
         obj.saveGame(fileout);
     }

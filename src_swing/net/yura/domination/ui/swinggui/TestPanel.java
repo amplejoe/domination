@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.AbstractTableModel;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
@@ -37,8 +39,8 @@ import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
@@ -120,7 +122,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			public int getRowCount() {
 
-				RiskGame game = myrisk.getGame();
+				IRiskGame game = myrisk.getGame();
 
 				if (game != null) {
 
@@ -189,7 +191,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			public int getRowCount() {
 
-				RiskGame game = myrisk.getGame();
+				IRiskGame game = myrisk.getGame();
 
 				if (game != null) {
 
@@ -231,7 +233,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 		cardsModel = new CardsTableModel() {
                     List getCards() {
-                        RiskGame game = myrisk.getGame();
+                        IRiskGame game = myrisk.getGame();
                         if (game!=null) {
                             List l = game.getCards();
                             return l==null?Collections.EMPTY_LIST:l;
@@ -242,7 +244,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
                 cardsModel2 = new CardsTableModel() {
                     List getCards() {
-                        RiskGame game = myrisk.getGame();
+                        IRiskGame game = myrisk.getGame();
                         if (game!=null) {
                             List l = game.getUsedCards();
                             return l==null?Collections.EMPTY_LIST:l;
@@ -261,7 +263,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 
 			public int getRowCount() {
 
-				RiskGame game = myrisk.getGame();
+				IRiskGame game = myrisk.getGame();
 
 				if (game != null) {
 
@@ -364,7 +366,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 			}
 
 			public int getRowCount() {
-				RiskGame game = myrisk.getGame();
+				IRiskGame game = myrisk.getGame();
 				if (game != null) {
 					List players = game.getCommands();
 					if (players != null) {
@@ -548,7 +550,7 @@ public class TestPanel extends JPanel implements ActionListener, SwingGUITab {
 		}
 		else if ("allcards".equals(command)) {
 
-			if (myrisk.getGame()!=null && myrisk.getGame().getState()!=RiskGame.STATE_NEW_GAME && myrisk.getGame().getCards()!=null) {
+			if (myrisk.getGame()!=null && myrisk.getGame().getState()!=IRiskGame.STATE_NEW_GAME && myrisk.getGame().getCards()!=null) {
 
 				Frame frame = RiskUIUtil.findParentFrame(this);
 

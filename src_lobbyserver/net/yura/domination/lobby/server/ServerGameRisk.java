@@ -23,7 +23,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.lobby.server.LobbySession;
 import net.yura.lobby.server.TurnBasedGame;
 import net.yura.mobile.util.Url;
@@ -53,7 +53,7 @@ public class ServerGameRisk extends TurnBasedGame {
                 public void openDocs(String doc) throws Exception {
 
                 }
-                public void saveGameFile(String name, RiskGame obj) throws Exception {
+                public void saveGameFile(String name, IRiskGame obj) throws Exception {
 
                 }
                 public InputStream loadGameFile(String file) throws Exception {
@@ -113,7 +113,7 @@ public class ServerGameRisk extends TurnBasedGame {
 		int aieasy = Integer.parseInt(options[1]);
 		int aihard = Integer.parseInt(options[2]);
 
-		if ((players.length+aiaverage+aieasy+aihard)>RiskGame.MAX_PLAYERS ) { throw new RuntimeException("player number missmatch for startgame"); }
+		if ((players.length+aiaverage+aieasy+aihard)>IRiskGame.MAX_PLAYERS ) { throw new RuntimeException("player number missmatch for startgame"); }
 
 		myrisk.addSetupCommandToInbox(options[3]); // set the map file to use
 
@@ -180,7 +180,7 @@ public class ServerGameRisk extends TurnBasedGame {
             try {
                 ByteArrayInputStream in = new ByteArrayInputStream(gameData);
                 ObjectInputStream oin = new ObjectInputStream(in);
-                RiskGame riskGame = (RiskGame)oin.readObject();
+                IRiskGame riskGame = (IRiskGame)oin.readObject();
 
                 String address=myrisk.getAddress();
                 List<Player> players = riskGame.getPlayerManager().getPlayers();
@@ -221,7 +221,7 @@ public class ServerGameRisk extends TurnBasedGame {
 	}
 
         private String getPlayerId(String username) {
-            RiskGame game = myrisk.getGame();
+            IRiskGame game = myrisk.getGame();
             List<Player> players = game.getPlayerManager().getPlayers();
             for (Player player:players) {
                 if (player.getType()==Player.PLAYER_HUMAN && player.getName().equals(username)) {
@@ -401,7 +401,7 @@ public class ServerGameRisk extends TurnBasedGame {
 	}
 
         private String whoHasMostPoints() {
-		RiskGame game = myrisk.getGame();
+		IRiskGame game = myrisk.getGame();
 		if ( game.checkPlayerWon() ) {
 			return game.getCurrentPlayer().getName();
 		}

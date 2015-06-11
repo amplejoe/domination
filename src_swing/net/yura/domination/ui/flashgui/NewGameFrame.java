@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
+
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
@@ -42,9 +43,11 @@ import javax.swing.JToggleButton;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
@@ -901,7 +904,7 @@ public class NewGameFrame extends JFrame implements ActionListener,MouseListener
 			Component[] players = PlayersPanel.getComponents();
 
 			if (
-					(players.length >= 2 && players.length <= RiskGame.MAX_PLAYERS )
+					(players.length >= 2 && players.length <= IRiskGame.MAX_PLAYERS )
 					// || (players.length == 2 && domination.isSelected() && ((playerPanel)players[0]).getType() == 0 && ((playerPanel)players[1]).getType() == 0 )
 			) {
 

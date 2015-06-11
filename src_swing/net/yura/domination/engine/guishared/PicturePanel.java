@@ -3,6 +3,7 @@
 package net.yura.domination.engine.guishared;
 
 import collisionphysics.BallWorld;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,18 +19,21 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
+
 import javax.swing.JPanel;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 
 
@@ -85,7 +89,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
         protected void processMouseEvent(MouseEvent e) {
             super.processMouseEvent(e);
-            if (e.getID() == MouseEvent.MOUSE_CLICKED && myrisk.getGame().getState() == RiskGame.STATE_GAME_OVER ) {
+            if (e.getID() == MouseEvent.MOUSE_CLICKED && myrisk.getGame().getState() == IRiskGame.STATE_GAME_OVER ) {
                 // toggle the animation
                 if (ballWorld==null) {
                     startAni();
@@ -101,7 +105,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 	 */
 	public void load() throws IOException {
 
-		RiskGame game = myrisk.getGame();
+		IRiskGame game = myrisk.getGame();
 
                 // clean up before we load new images
                 original = null;
@@ -123,7 +127,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 
 
-		RiskGame game = myrisk.getGame();
+		IRiskGame game = myrisk.getGame();
                 BALL_SIZE = game.getPropertyManager().getCircleSize();
                 setFont( new java.awt.Font("Arial", java.awt.Font.PLAIN, (BALL_SIZE+2)/2 ) );
 		original = O;
@@ -279,7 +283,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                                 drawHighLightImage(g2, cc);
                         }
 
-                        if (myrisk.getGame().getState()==RiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
+                        if (myrisk.getGame().getState()==IRiskGame.STATE_TRADE_CARDS && myrisk.showHumanPlayerThereInfo()) {
                             Player me = myrisk.getGame().getCurrentPlayer();
                             List<Card> cards = me.getCards();
                             for (Card card:cards) {
@@ -342,7 +346,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 	 */
 	public void drawArmies(Graphics2D g2) {
 
-		RiskGame game = myrisk.getGame();
+		IRiskGame game = myrisk.getGame();
 
 		Country[] v = game.getCountries();
 
@@ -350,7 +354,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 int r = BALL_SIZE/2;
 
-		if (state==RiskGame.STATE_ROLLING || state==RiskGame.STATE_BATTLE_WON || state==RiskGame.STATE_DEFEND_YOURSELF) {
+		if (state==IRiskGame.STATE_ROLLING || state==IRiskGame.STATE_BATTLE_WON || state==IRiskGame.STATE_DEFEND_YOURSELF) {
 
 			int a=game.getAttacker().getColor();
 			int b=game.getDefender().getColor();
@@ -387,7 +391,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 if (oldState != state) { // if the state has changed!!!
                     oldState = state;
-                    if (state == RiskGame.STATE_GAME_OVER) {
+                    if (state == IRiskGame.STATE_GAME_OVER) {
                         startAni();
                     }
                     else {
@@ -435,7 +439,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
                 }
 
-		if (game.getGameMode() == RiskGame.MODE_CAPITAL && game.getSetupDone() && state !=RiskGame.STATE_SELECT_CAPITAL ) {
+		if (game.getGameMode() == IRiskGame.MODE_CAPITAL && game.getSetupDone() && state !=IRiskGame.STATE_SELECT_CAPITAL ) {
 
                         int stroke = BALL_SIZE / 10;
 
@@ -614,7 +618,7 @@ public class PicturePanel extends JPanel implements MapPanel {
                 // if something went wrong with setting up (e.g. OutOfMemoryError), dont draw anything
                 if (tempimg == null) return;
 
-		RiskGame game = myrisk.getGame();
+		IRiskGame game = myrisk.getGame();
 
 		{ Graphics zg = tempimg.getGraphics(); zg.drawImage(original ,0 ,0 ,this); zg.dispose(); }
 
@@ -1119,7 +1123,7 @@ public class PicturePanel extends JPanel implements MapPanel {
 
 		if (incolor) {
 
-			Color ownerColor = new Color( ((Player) ((Country) ((RiskGame)myrisk.getGame()) .getCountryInt( num )) .getOwner()).getColor() );
+			Color ownerColor = new Color( ((Player) ((Country) ((IRiskGame)myrisk.getGame()) .getCountryInt( num )) .getOwner()).getColor() );
 
 			g.setColor( new Color(ownerColor.getRed(), ownerColor.getGreen(), ownerColor.getBlue(), 100) );
 			g.fillRect(0,0,w,h);
@@ -1143,7 +1147,7 @@ public class PicturePanel extends JPanel implements MapPanel {
         public final static int PREVIEW_WIDTH=203;
         public final static int PREVIEW_HEIGHT=127;
 
-	public static Image getImage(RiskGame game) throws IOException {
+	public static Image getImage(IRiskGame game) throws IOException {
 		// attempt to get the preview as its smaller
 		String previewName = game.getPreviewPic();
                 String name = game.getPropertyManager().getMapName();

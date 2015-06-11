@@ -15,12 +15,13 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
+
 import net.yura.domination.engine.ai.AISubmissive;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.core.StatType;
 import net.yura.domination.engine.core.Statistic;
 
@@ -491,12 +492,12 @@ public class AIDomination extends AISubmissive {
 							&& gameState.me.playerValue < gameState.orderedPlayers.get(0).playerValue
 							&& shouldEndAttack
 							&& et.ps.armies > gameState.me.armies*.4
-						    && et.ps.armies - getCardEstimate(et.ps.p.getCards().size()) > (totalCards>RiskGame.MAX_CARDS?1:(gameState.me.playerValue/gameState.orderedPlayers.get(0).playerValue)) * getCardEstimate(player.getCards().size() + et.ps.p.getCards().size())) {
+						    && et.ps.armies - getCardEstimate(et.ps.p.getCards().size()) > (totalCards>IRiskGame.MAX_CARDS?1:(gameState.me.playerValue/gameState.orderedPlayers.get(0).playerValue)) * getCardEstimate(player.getCards().size() + et.ps.p.getCards().size())) {
 						toEliminate.remove(i--);
 						continue;
 					}
 					if ((et.ps.p.getCards().isEmpty() && gameState.orderedPlayers.get(0).playerValue > .7*gameState.me.playerValue)
-							|| (et.ps.p.getCards().size() > 2 && player.getCards().size() + et.ps.p.getCards().size() <= RiskGame.MAX_CARDS)) {
+							|| (et.ps.p.getCards().size() > 2 && player.getCards().size() + et.ps.p.getCards().size() <= IRiskGame.MAX_CARDS)) {
 						//don't consider in a second pass
 						toEliminate.remove(i--);
 					}
@@ -695,7 +696,7 @@ public class AIDomination extends AISubmissive {
 	}
 
 	protected boolean isIncreasingSet() {
-		return game.getCardMode() == RiskGame.CARD_INCREASING_SET && (type != PLAYER_AI_HARD || game.getNewCardState() > 12) && (!game.getCards().isEmpty() || game.isRecycleCards());
+		return game.getCardMode() == IRiskGame.CARD_INCREASING_SET && (type != PLAYER_AI_HARD || game.getNewCardState() > 12) && (!game.getCards().isEmpty() || game.isRecycleCards());
 	}
 
 	private String ensureRiskCard(List<Country> attackable, GameState gameState,
@@ -840,7 +841,7 @@ public class AIDomination extends AISubmissive {
 						}
 			        	continue;
 			        }
-			        if ((isIncreasingSet() || (game.getCardMode() == RiskGame.CARD_ITALIANLIKE_SET && !game.getCards().isEmpty()) || gameState.me.playerValue < .8*gameState.orderedPlayers.get(0).playerValue) && !isGoodIdea(gameState, targets, bestRoute, target, attackFrom, null, shouldEndAttack)) {
+			        if ((isIncreasingSet() || (game.getCardMode() == IRiskGame.CARD_ITALIANLIKE_SET && !game.getCards().isEmpty()) || gameState.me.playerValue < .8*gameState.orderedPlayers.get(0).playerValue) && !isGoodIdea(gameState, targets, bestRoute, target, attackFrom, null, shouldEndAttack)) {
 			        	//don't push toward elimination
 			        	continue;
 			        }
@@ -1571,7 +1572,7 @@ public class AIDomination extends AISubmissive {
 			if (gameState.commonThreat != null && c.getOwner() != gameState.commonThreat.p && c.getContinent().getOwner() != null) {
 				return false;
 			}
-			if (player.getMission() == null && game.getCardMode() == RiskGame.CARD_ITALIANLIKE_SET && c.getOwner().getCards().size() < 4) {
+			if (player.getMission() == null && game.getCardMode() == IRiskGame.CARD_ITALIANLIKE_SET && c.getOwner().getCards().size() < 4) {
 				return true;
 			}
 			if (gameState.commonThreat != null && c.getOwner().getCards().size() <= 2) {
@@ -1645,7 +1646,7 @@ public class AIDomination extends AISubmissive {
 			boolean isTarget = gameState.targetPlayers.size() > 1 && gameState.targetPlayers.get(0) == player2;
 			double divisor = 1;
 			int cardCount = player2.getCards().size();
-			if ((!isIncreasingSet() || game.getNewCardState() < gameState.me.defenseValue/8) && (!attack || player2.getTerritoriesOwned().size() > 1) && !game.getCards().isEmpty() && cardCount < 3 && (game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET||(cardCount+player.getCards().size()<RiskGame.MAX_CARDS))) {
+			if ((!isIncreasingSet() || game.getNewCardState() < gameState.me.defenseValue/8) && (!attack || player2.getTerritoriesOwned().size() > 1) && !game.getCards().isEmpty() && cardCount < 3 && (game.getCardMode()==IRiskGame.CARD_ITALIANLIKE_SET||(cardCount+player.getCards().size()<IRiskGame.MAX_CARDS))) {
 				divisor+=(.5*Math.max(0, isIncreasingSet()?2:4 - cardCount));
 			}
 
@@ -1859,21 +1860,21 @@ public class AIDomination extends AISubmissive {
     		}
     		if (border.contains(game.getAttacker())) {
     			specialCase = true;
-    			if (cont != null && game.getCardMode() == RiskGame.CARD_FIXED_SET && border.contains(game.getDefender()) && game.getDefender().getContinent() == game.getAttacker().getContinent()) {
+    			if (cont != null && game.getCardMode() == IRiskGame.CARD_FIXED_SET && border.contains(game.getDefender()) && game.getDefender().getContinent() == game.getAttacker().getContinent()) {
     				cont = null;
     				specialCase = false;
     			} else if (gameState.me.owned.contains(game.getAttacker().getContinent())) {
 	    			cont = game.getAttacker().getContinent();
     			}
     		}
-    		if (specialCase && game.getCardMode() != RiskGame.CARD_FIXED_SET) {
+    		if (specialCase && game.getCardMode() != IRiskGame.CARD_FIXED_SET) {
     			needed = additionalTroopsNeeded(game.getAttacker(), gameState);
     		}
     		if (cont != null) {
     			if (cont.getBorderCountries().size() > 2) {
     				needed += cont.getArmyValue();
     			} else {
-    	    		if (specialCase && game.getCardMode() == RiskGame.CARD_FIXED_SET) {
+    	    		if (specialCase && game.getCardMode() == IRiskGame.CARD_FIXED_SET) {
     	    			needed = additionalTroopsNeeded(game.getAttacker(), gameState);
     	    		}
     				needed += (4 * cont.getArmyValue())/Math.max(1, cont.getBorderCountries().size());
@@ -2228,7 +2229,7 @@ public class AIDomination extends AISubmissive {
     			if (!isIncreasingSet()) {
     				//we can be more lenient with more players
     				multiplier = Math.max(1, multiplier - .4 + g.orderedPlayers.size()*.1);
-    			} else if (game.getCardMode() != RiskGame.CARD_ITALIANLIKE_SET) {
+    			} else if (game.getCardMode() != IRiskGame.CARD_ITALIANLIKE_SET) {
     				//don't want to pursue the lowest player if there's a good chance someone else will eliminate
     				multiplier *= 1.5;
     			}
@@ -2256,7 +2257,7 @@ public class AIDomination extends AISubmissive {
     }
 
 	private int getCardEstimate(int cards) {
-		int tradeIn = game.getCardMode() != RiskGame.CARD_INCREASING_SET?8:game.getNewCardState();
+		int tradeIn = game.getCardMode() != IRiskGame.CARD_INCREASING_SET?8:game.getNewCardState();
 		int cardEstimate = cards < 3?0:(int)((cards-2)/3.0*tradeIn);
 		return cardEstimate;
 	}
@@ -2296,7 +2297,7 @@ public class AIDomination extends AISubmissive {
      */
     public String getTrade() {
     	if (!game.getTradeCap() && type != AIDomination.PLAYER_AI_EASY) {
-    		if (game.getCardMode() != RiskGame.CARD_ITALIANLIKE_SET && player.getCards().size() >= RiskGame.MAX_CARDS) {
+    		if (game.getCardMode() != IRiskGame.CARD_ITALIANLIKE_SET && player.getCards().size() >= IRiskGame.MAX_CARDS) {
     			return super.getTrade();
     		}
     		GameState gs = getGameState(player, true);

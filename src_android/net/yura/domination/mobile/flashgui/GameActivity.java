@@ -18,7 +18,7 @@ import javax.microedition.lcdui.Image;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.guishared.MapMouseListener;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mobile.MiniUtil;
@@ -103,7 +103,7 @@ public class GameActivity extends Frame implements ActionListener {
         pp.addMouseListener(
             new MouseListener() {
                 public void click(int x,int y) {
-                    if (gameState == RiskGame.STATE_TRADE_CARDS) {
+                    if (gameState == IRiskGame.STATE_TRADE_CARDS) {
                         openCards();
                     }
                     else {
@@ -556,7 +556,7 @@ public class GameActivity extends Frame implements ActionListener {
             human = currentPlayer;
         }
 
-        cardsDialog.setup(human, human == currentPlayer && gameState == RiskGame.STATE_TRADE_CARDS);
+        cardsDialog.setup(human, human == currentPlayer && gameState == IRiskGame.STATE_TRADE_CARDS);
         cardsDialog.setVisible(true);
     }
 
@@ -643,7 +643,7 @@ public class GameActivity extends Frame implements ActionListener {
             String noteText=null;
             boolean mustTrade=false;
             switch (gameState) {
-                    case RiskGame.STATE_TRADE_CARDS: {
+                    case IRiskGame.STATE_TRADE_CARDS: {
                             // after wiping out someone if you go into trade mode
                             pp.setC1(255);
                             pp.setC2(255);
@@ -656,28 +656,28 @@ public class GameActivity extends Frame implements ActionListener {
                             }
                             break;
                     }
-                    case RiskGame.STATE_PLACE_ARMIES: {
+                    case IRiskGame.STATE_PLACE_ARMIES: {
                             goButtonText = resb.getProperty("game.button.go.autoplace");
                             noteText = getArmiesLeftText();
                             break;
                     }
-                    case RiskGame.STATE_ATTACKING: {
+                    case IRiskGame.STATE_ATTACKING: {
                             pp.setC1(255);
                             pp.setC2(255);
                             noteText = resb.getProperty("game.note.selectattacker");
                             goButtonText = resb.getProperty("game.button.go.endattack");
                             break;
                     }
-                    case RiskGame.STATE_FORTIFYING: {
+                    case IRiskGame.STATE_FORTIFYING: {
                             noteText = resb.getProperty("game.note.selectsource");
                             goButtonText = resb.getProperty("game.button.go.nomove");
                             break;
                     }
-                    case RiskGame.STATE_END_TURN: {
+                    case IRiskGame.STATE_END_TURN: {
                             goButtonText = resb.getProperty("game.button.go.endgo");
                             break;
                     }
-                    case RiskGame.STATE_GAME_OVER: {
+                    case IRiskGame.STATE_GAME_OVER: {
 
                 	    checkIfPlayerUnlockedAchievement();
 
@@ -695,7 +695,7 @@ public class GameActivity extends Frame implements ActionListener {
                             }
                             break;
                     }
-                    case RiskGame.STATE_SELECT_CAPITAL: {
+                    case IRiskGame.STATE_SELECT_CAPITAL: {
                             noteText = resb.getProperty("core.help.selectcapital");
                             goButtonText = null;
                             break;
@@ -711,7 +711,7 @@ public class GameActivity extends Frame implements ActionListener {
 
             cardsbutton.setName(mustTrade?"MustTradeButton":"CardsButton");
 
-            if (gameState!=RiskGame.STATE_DEFEND_YOURSELF) {
+            if (gameState!=IRiskGame.STATE_DEFEND_YOURSELF) {
                     cardsbutton.setFocusable(true);
 
                     if (localGame) {
@@ -761,7 +761,7 @@ public class GameActivity extends Frame implements ActionListener {
 
     void checkIfPlayerUnlockedAchievement() {
 	if (myrisk.getLocalGame()) {
-            RiskGame game = myrisk.getGame();
+            IRiskGame game = myrisk.getGame();
             if ("luca.map".equals(game.getMapFile())) {
                 List<Player> players = game.getPlayerManager().getPlayers();
                 if (players.size() == 6) {
@@ -810,72 +810,72 @@ public class GameActivity extends Frame implements ActionListener {
     private static void unlockAchievement(int gameMode,int cardMode,int difficulty) {
         GooglePlayGameServices ncl = DominationMain.getGooglePlayGameServices();
         if (ncl != null) {
-            if (gameMode == RiskGame.MODE_CAPITAL) {
+            if (gameMode == IRiskGame.MODE_CAPITAL) {
                 if (difficulty == Player.PLAYER_AI_EASY) {
-                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                    if (cardMode==IRiskGame.CARD_INCREASING_SET) {
                         ncl.unlockAchievement(EASY_INCREASING_CAPITAL);
                     }
-                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                    else if (cardMode==IRiskGame.CARD_FIXED_SET) {
                         ncl.unlockAchievement(EASY_FIXED_CAPITAL);
                     }
-                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                    else if (cardMode==IRiskGame.CARD_ITALIANLIKE_SET) {
                         ncl.unlockAchievement(EASY_ITALIAN_CAPITAL);
                     }
                 }
                 else if (difficulty == Player.PLAYER_AI_AVERAGE) {
-                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                    if (cardMode==IRiskGame.CARD_INCREASING_SET) {
                         ncl.unlockAchievement(AVERAGE_INCREASING_CAPITAL);
                     }
-                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                    else if (cardMode==IRiskGame.CARD_FIXED_SET) {
                         ncl.unlockAchievement(AVERAGE_FIXED_CAPITAL);
                     }
-                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                    else if (cardMode==IRiskGame.CARD_ITALIANLIKE_SET) {
                         ncl.unlockAchievement(AVERAGE_ITALIAN_CAPITAL);
                     }
                 }
                 else if (difficulty == Player.PLAYER_AI_HARD) {
-                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                    if (cardMode==IRiskGame.CARD_INCREASING_SET) {
                         ncl.unlockAchievement(HARD_INCREASING_CAPITAL);
                     }
-                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                    else if (cardMode==IRiskGame.CARD_FIXED_SET) {
                         ncl.unlockAchievement(HARD_FIXED_CAPITAL);
                     }
-                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                    else if (cardMode==IRiskGame.CARD_ITALIANLIKE_SET) {
                         ncl.unlockAchievement(HARD_ITALIAN_CAPITAL);
                     }
                 }
             }
-            else if (gameMode == RiskGame.MODE_DOMINATION) {
+            else if (gameMode == IRiskGame.MODE_DOMINATION) {
                 if (difficulty == Player.PLAYER_AI_EASY) {
-                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                    if (cardMode==IRiskGame.CARD_INCREASING_SET) {
                         ncl.unlockAchievement(EASY_INCREASING_DOMINATION);
                     }
-                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                    else if (cardMode==IRiskGame.CARD_FIXED_SET) {
                         ncl.unlockAchievement(EASY_FIXED_DOMINATION);
                     }
-                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                    else if (cardMode==IRiskGame.CARD_ITALIANLIKE_SET) {
                         ncl.unlockAchievement(EASY_ITALIAN_DOMINATION);
                     }
                 }
                 else if (difficulty == Player.PLAYER_AI_AVERAGE) {
-                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                    if (cardMode==IRiskGame.CARD_INCREASING_SET) {
                         ncl.unlockAchievement(AVERAGE_INCREASING_DOMINATION);
                     }
-                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                    else if (cardMode==IRiskGame.CARD_FIXED_SET) {
                         ncl.unlockAchievement(AVERAGE_FIXED_DOMINATION);
                     }
-                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                    else if (cardMode==IRiskGame.CARD_ITALIANLIKE_SET) {
                         ncl.unlockAchievement(AVERAGE_ITALIAN_DOMINATION);
                     }
                 }
                 else if (difficulty == Player.PLAYER_AI_HARD) {
-                    if (cardMode==RiskGame.CARD_INCREASING_SET) {
+                    if (cardMode==IRiskGame.CARD_INCREASING_SET) {
                         ncl.unlockAchievement(HARD_INCREASING_DOMINATION);
                     }
-                    else if (cardMode==RiskGame.CARD_FIXED_SET) {
+                    else if (cardMode==IRiskGame.CARD_FIXED_SET) {
                         ncl.unlockAchievement(HARD_FIXED_DOMINATION);
                     }
-                    else if (cardMode==RiskGame.CARD_ITALIANLIKE_SET) {
+                    else if (cardMode==IRiskGame.CARD_ITALIANLIKE_SET) {
                         ncl.unlockAchievement(HARD_ITALIAN_DOMINATION);
                     }
                 }
@@ -909,24 +909,24 @@ public class GameActivity extends Frame implements ActionListener {
     }
 
     private void goOn() {
-            if (gameState==RiskGame.STATE_TRADE_CARDS) {
+            if (gameState==IRiskGame.STATE_TRADE_CARDS) {
                     go("endtrade");
             }
-            else if (gameState==RiskGame.STATE_PLACE_ARMIES) {
+            else if (gameState==IRiskGame.STATE_PLACE_ARMIES) {
                     go("autoplace");
             }
-            else if (gameState==RiskGame.STATE_ATTACKING) {
+            else if (gameState==IRiskGame.STATE_ATTACKING) {
                     pp.setC1(255);
                     go("endattack");
             }
-            else if (gameState==RiskGame.STATE_FORTIFYING) {
+            else if (gameState==IRiskGame.STATE_FORTIFYING) {
                     pp.setC1(255);
                     go("nomove");
             }
-            else if (gameState==RiskGame.STATE_END_TURN) {
+            else if (gameState==IRiskGame.STATE_END_TURN) {
                     go("endgo");
             }
-            else if (gameState==RiskGame.STATE_GAME_OVER) {
+            else if (gameState==IRiskGame.STATE_GAME_OVER) {
                     if (myrisk.getGame().canContinue()) {
                         go("continue");
                     }
@@ -934,7 +934,7 @@ public class GameActivity extends Frame implements ActionListener {
                         go("closegame");
                     }
             }
-            else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+            else if (gameState == IRiskGame.STATE_SELECT_CAPITAL) {
                     int c1Id = pp.getC1();
                     pp.setC1(255);
                     go("capital " + c1Id);
@@ -945,7 +945,7 @@ public class GameActivity extends Frame implements ActionListener {
 
         pp.setHighLight(255);
 
-        if (gameState!=RiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetupDone() ) { noInput(); }
+        if (gameState!=IRiskGame.STATE_PLACE_ARMIES || !myrisk.getGame().getSetupDone() ) { noInput(); }
 
         myrisk.parser(input);
 
@@ -977,7 +977,7 @@ public class GameActivity extends Frame implements ActionListener {
 
     public void mapClick(int[] countries) {
 
-        if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+        if (gameState == IRiskGame.STATE_PLACE_ARMIES) {
             if (countries.length==1) {
                 //if ( e.getModifiers() == java.awt.event.InputEvent.BUTTON1_MASK ) {
                     go( "placearmies " + countries[0] + " 1" );
@@ -988,7 +988,7 @@ public class GameActivity extends Frame implements ActionListener {
                 //}
             }
         }
-        else if (gameState == RiskGame.STATE_ATTACKING) {
+        else if (gameState == IRiskGame.STATE_ATTACKING) {
 
             if (countries.length==0) {
                 note.setText( resb.getProperty("game.note.selectattacker") );
@@ -1002,7 +1002,7 @@ public class GameActivity extends Frame implements ActionListener {
             }
 
         }
-        else if (gameState == RiskGame.STATE_FORTIFYING) {
+        else if (gameState == IRiskGame.STATE_FORTIFYING) {
             if (countries.length==0) {
                 note.setText( resb.getProperty("game.note.selectsource") );
             }
@@ -1034,7 +1034,7 @@ public class GameActivity extends Frame implements ActionListener {
 
             }
         }
-        else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+        else if (gameState == IRiskGame.STATE_SELECT_CAPITAL) {
             note.setText( resb.getProperty("game.note.happyok") );
             setGoButtonText( resb.getProperty("game.button.go.ok") );
         }

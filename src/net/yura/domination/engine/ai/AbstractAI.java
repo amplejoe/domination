@@ -5,7 +5,7 @@ package net.yura.domination.engine.ai;
 import net.yura.domination.engine.ai.logic.AICapital;
 import net.yura.domination.engine.ai.logic.AIDomination;
 import net.yura.domination.engine.ai.logic.AIMission;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 
 public abstract class AbstractAI implements AI {
 	
@@ -22,13 +22,13 @@ public abstract class AbstractAI implements AI {
         capital = new AICapital(type);
     }
 
-    public void setGame(RiskGame game) {
+    public void setGame(IRiskGame game) {
         int mode = game.getGameMode();
 
-        if (mode==RiskGame.MODE_CAPITAL) {
+        if (mode==IRiskGame.MODE_CAPITAL) {
             current = capital;
         }
-        else if (mode==RiskGame.MODE_SECRET_MISSION) {
+        else if (mode==IRiskGame.MODE_SECRET_MISSION) {
             current = mission;
         }
         else {

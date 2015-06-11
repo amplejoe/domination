@@ -26,12 +26,15 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.yura.domination.engine.ai.AIManager;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.RiskGameFactory;
 import net.yura.domination.engine.p2pclient.ChatClient;
 import net.yura.domination.engine.p2pserver.ChatArea;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -49,7 +52,7 @@ public class Risk extends Thread {
         private static final Logger logger = Logger.getLogger(Risk.class.getName());
 
 	protected RiskController controller;
-	protected RiskGame game;
+	protected IRiskGame game;
 
         OnlineRisk onlinePlayClient;
 	private ChatArea p2pServer;
@@ -394,7 +397,7 @@ public class Risk extends Thread {
 					try {
 						List replayCommands = game.getCommands();
 						saveGameToUndoObject();
-						game = new RiskGame();
+						game = RiskGameFactory.create();
 						replay = true;
 						for (Iterator e = replayCommands.iterator(); e.hasNext();) {
 							inGameParser( (String)e.next() );
@@ -455,7 +458,7 @@ public class Risk extends Thread {
                                         try {
 
                                                 // CREATE A GAME
-                                                game = new RiskGame();
+                                                game = RiskGameFactory.create();
 
                                                 // NO SERVER OR CLIENT IS STARTED
 
@@ -505,7 +508,7 @@ RiskUtil.printStackTrace(e);
                                                         output=output+ System.getProperty("line.separator") + resb.getString( "core.loadgame.currentplayer") + " " + player.getName();
                                                 }
 
-                                                if (game.getState()==RiskGame.STATE_NEW_GAME) {
+                                                if (game.getState()==IRiskGame.STATE_NEW_GAME) {
                                                     controller.newGame(true);
                                                     setupPreviews( doesMapHaveMission() );
                                                 }
@@ -542,7 +545,7 @@ RiskUtil.printStackTrace(e);
                                                 onlinePlayClient = new ChatClient( this, myAddress, StringT.nextToken(), port );
 
                                                 // CREATE A GAME
-                                                game = new RiskGame();
+                                                game = RiskGameFactory.create();
 
                                                 unlimitedLocalMode = false;
 
@@ -752,7 +755,7 @@ RiskUtil.printStackTrace(e);
 
                                             output = output + patc.getName()+" ";
 
-                                            if (game.getState() == RiskGame.STATE_NEW_GAME ) {
+                                            if (game.getState() == IRiskGame.STATE_NEW_GAME ) {
 
                                                     // should never return false
                                                     if ( game.delPlayer( patc.getName() ) ) {
@@ -898,7 +901,7 @@ RiskUtil.printStackTrace(e);
 			else { output=resb.getString( "core.dice.error.unabletoroll"); }
 
 			// ==1 this fixes the automove bug, when u need to trade after rolling and automove
-			if ( game.getState()!=RiskGame.STATE_ROLLING && game.getState()!=RiskGame.STATE_DEFEND_YOURSELF) {
+			if ( game.getState()!=IRiskGame.STATE_ROLLING && game.getState()!=IRiskGame.STATE_DEFEND_YOURSELF) {
 
 				closeBattle();
 
@@ -923,7 +926,7 @@ RiskUtil.printStackTrace(e);
 
 			output=RiskUtil.replaceAll(resb.getString( "core.player.randomselected"), "{0}", p.getName());
 
-			if ( game.getGameMode()==RiskGame.MODE_SECRET_MISSION || autoplaceall==true ) {
+			if ( game.getGameMode()==IRiskGame.MODE_SECRET_MISSION || autoplaceall==true ) {
 				needInput=false;
 			}
 			else {
@@ -1034,7 +1037,7 @@ RiskUtil.printStackTrace(e);
 
 			String echo = message.substring( Addr.length()+1 );
 
-			if (game != null && game.getCurrentPlayer() != null && game.getState()!=RiskGame.STATE_GAME_OVER ) {
+			if (game != null && game.getCurrentPlayer() != null && game.getState()!=IRiskGame.STATE_GAME_OVER ) {
 
                                 int type = game.getCurrentPlayer().getType();
 
@@ -1066,7 +1069,7 @@ RiskUtil.printStackTrace(e);
 			String input=StringT.nextToken();
 			output="";
 
-                        if (game.getState()==RiskGame.STATE_NEW_GAME) {
+                        if (game.getState()==IRiskGame.STATE_NEW_GAME) {
 
 				if (input.equals("choosemap")) {
 
@@ -1203,7 +1206,7 @@ RiskUtil.printStackTrace(e);
 
 						    if (!replay) {
 
-							for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
+							for (int c=1;c<=IRiskGame.MAX_PLAYERS;c++) {
 
 								parser("newplayer " + riskconfig.getProperty("default.player"+c+".type")+" "+ riskconfig.getProperty("default.player"+c+".color")+" "+ riskconfig.getProperty("default.player"+c+".name") );
 
@@ -1245,22 +1248,22 @@ RiskUtil.printStackTrace(e);
 						while (StringT.hasMoreTokens()) {
 							String newOption = StringT.nextToken();
 							if ( newOption.equals("domination") ) {
-								newgame_type = RiskGame.MODE_DOMINATION;
+								newgame_type = IRiskGame.MODE_DOMINATION;
 							}
 							else if ( newOption.equals("capital") ) {
-								newgame_type = RiskGame.MODE_CAPITAL;
+								newgame_type = IRiskGame.MODE_CAPITAL;
 							}
 							else if ( newOption.equals("mission") ) {
-								newgame_type = RiskGame.MODE_SECRET_MISSION;
+								newgame_type = IRiskGame.MODE_SECRET_MISSION;
 							}
 							else if ( newOption.equals("increasing") ) {
-								newgame_cardType = RiskGame.CARD_INCREASING_SET;
+								newgame_cardType = IRiskGame.CARD_INCREASING_SET;
 							}
 							else if ( newOption.equals("fixed") ) {
-								newgame_cardType = RiskGame.CARD_FIXED_SET;
+								newgame_cardType = IRiskGame.CARD_FIXED_SET;
 							}
 							else if ( newOption.equals("italianlike") ) {
-								newgame_cardType = RiskGame.CARD_ITALIANLIKE_SET;
+								newgame_cardType = IRiskGame.CARD_ITALIANLIKE_SET;
                                                                 threeDice = true;
 							}
 							else if ( newOption.equals("autoplaceall") ) {
@@ -1276,7 +1279,7 @@ RiskUtil.printStackTrace(e);
 
                                                 if (crap==null) {
                                                     // checks all the options are correct to start a game
-                                                    if ( newgame_type!=-1 && newgame_cardType!=-1 && n>=2 && n<=RiskGame.MAX_PLAYERS) {
+                                                    if ( newgame_type!=-1 && newgame_cardType!=-1 && n>=2 && n<=IRiskGame.MAX_PLAYERS) {
 
                                                             autoplaceall = newgame_autoplaceall;
 
@@ -1294,7 +1297,7 @@ RiskUtil.printStackTrace(e);
                                                     }
 
                                                     // this checks if the game was able to start or not
-                                                    if (game.getState() != RiskGame.STATE_NEW_GAME ) {
+                                                    if (game.getState() != IRiskGame.STATE_NEW_GAME ) {
 
                                                         controller.noInput();
 
@@ -1305,7 +1308,7 @@ RiskUtil.printStackTrace(e);
                                                             gameCommand(Addr, "PLAYER", String.valueOf( game.getRandomPlayer() ) );
 
                                                             // do that mission thing
-                                                            if (game.getGameMode()== RiskGame.MODE_SECRET_MISSION ) {
+                                                            if (game.getGameMode()== IRiskGame.MODE_SECRET_MISSION ) {
 
                                                                     // give me a array of random numbers
                                                                     Random r = new Random();
@@ -1325,7 +1328,7 @@ RiskUtil.printStackTrace(e);
                                                             }
 
                                                             // do that autoplace thing
-                                                            if ( game.getGameMode()==RiskGame.MODE_SECRET_MISSION || autoplaceall ) {
+                                                            if ( game.getGameMode()==IRiskGame.MODE_SECRET_MISSION || autoplaceall ) {
 
                                                                     List a = game.shuffleCountries();
 
@@ -1451,7 +1454,7 @@ RiskUtil.printStackTrace(e);
                                 // UNDO
                                 if (input.equals("undo")) {
 
-                                    if(game.getState()!=RiskGame.STATE_GAME_OVER && aiPlayer) {
+                                    if(game.getState()!=IRiskGame.STATE_GAME_OVER && aiPlayer) {
                                         throw new IllegalArgumentException("ai is trying to call undo");
                                     }
 
@@ -1461,10 +1464,10 @@ RiskUtil.printStackTrace(e);
 
                                             try {
                                                     // can not undo when defending yourself as it is not really your go
-                                                    if (game.getState()!=RiskGame.STATE_DEFEND_YOURSELF && Undo!=null && Undo.size()!=0) {
+                                                    if (game.getState()!=IRiskGame.STATE_DEFEND_YOURSELF && Undo!=null && Undo.size()!=0) {
                                                             //game = (RiskGame)Undo.getObject( nullCipher );
                                                             ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(Undo.toByteArray()));
-                                                            game = (RiskGame)in.readObject();
+                                                            game = (IRiskGame)in.readObject();
 
                                                             output =resb.getString( "core.undo.undone");
                                                     }
@@ -1500,7 +1503,7 @@ RiskUtil.printStackTrace(e);
                                 else if (input.equals("showarmies")) {
                                     if (StringT.hasMoreTokens()==false) {
 
-                                            if ( game.getState() != RiskGame.STATE_NEW_GAME) {
+                                            if ( game.getState() != IRiskGame.STATE_NEW_GAME) {
 
                                                     Country[] v = game.getCountries();
 
@@ -1512,7 +1515,7 @@ RiskUtil.printStackTrace(e);
 
                                                             if ( v[c].getOwner() != null ) {
                                                                     output = output + ((Player)v[c].getOwner()).getName() +" ("+v[c].getArmies() +")";
-                                                                    if (game.getGameMode() == 2 && game.getSetupDone() && game.getState() !=RiskGame.STATE_SELECT_CAPITAL) {
+                                                                    if (game.getGameMode() == 2 && game.getSetupDone() && game.getState() !=IRiskGame.STATE_SELECT_CAPITAL) {
 
                                                                             List players = game.getPlayerManager().getPlayers();
 
@@ -1567,11 +1570,11 @@ RiskUtil.printStackTrace(e);
                                                             }
                                                     }
 
-                                                    if(game.getCardMode()==RiskGame.CARD_FIXED_SET) {
+                                                    if(game.getCardMode()==IRiskGame.CARD_FIXED_SET) {
                                                             output = output+"\n"+ resb.getString("cards.fixed");
 
                                                     }
-                                                    else if(game.getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+                                                    else if(game.getCardMode()==IRiskGame.CARD_ITALIANLIKE_SET) {
                                                             output = output+"\n"+ resb.getString("cards.italianlike");
 
                                                     }
@@ -1642,7 +1645,7 @@ RiskUtil.printStackTrace(e);
                                     }
                                     else { output=RiskUtil.replaceAll(resb.getString( "core.error.syntax"), "{0}", "autodefend on/off"); }
                                 }
-                                else if (game.getState()==RiskGame.STATE_TRADE_CARDS) {
+                                else if (game.getState()==IRiskGame.STATE_TRADE_CARDS) {
 
                                     if (input.equals("trade")) {
                                             if (StringT.countTokens()==3) {
@@ -1676,7 +1679,7 @@ RiskUtil.printStackTrace(e);
                                         throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showcards, trade"+(game.canEndTrade()?", endtrade":"") ));
                                     }
                                 }
-                                else if (game.getState()==RiskGame.STATE_PLACE_ARMIES) {
+                                else if (game.getState()==IRiskGame.STATE_PLACE_ARMIES) {
 
                                     if (input.equals("placearmies")) {
                                             if (StringT.countTokens()==2) {
@@ -1727,7 +1730,7 @@ RiskUtil.printStackTrace(e);
                                     else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "showarmies, placearmies, autoplace")); }
 
                                 }
-                                else if (game.getState()==RiskGame.STATE_ATTACKING) {
+                                else if (game.getState()==IRiskGame.STATE_ATTACKING) {
 
                                     if (input.equals("attack")) {
                                             if (StringT.countTokens()==2) {
@@ -1791,7 +1794,7 @@ RiskUtil.printStackTrace(e);
                                     else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "attack, endattack")); }
 
                                 }
-                                else if (game.getState()==RiskGame.STATE_ROLLING) {
+                                else if (game.getState()==IRiskGame.STATE_ROLLING) {
 
                                     if (input.equals("roll")) {
 
@@ -1838,7 +1841,7 @@ RiskUtil.printStackTrace(e);
                                     else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "roll, retreat")); }
 
                                 }
-                                else if (game.getState()==RiskGame.STATE_BATTLE_WON) {
+                                else if (game.getState()==IRiskGame.STATE_BATTLE_WON) {
 
                                     if (input.equals("move")) {
                                             if (StringT.countTokens()==1) {
@@ -1870,7 +1873,7 @@ RiskUtil.printStackTrace(e);
                                     else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "move")); }
 
                                 }
-                                else if (game.getState()==RiskGame.STATE_FORTIFYING) {
+                                else if (game.getState()==IRiskGame.STATE_FORTIFYING) {
 
                                     if (input.equals("movearmies")) {
                                             if (StringT.countTokens()==3) {
@@ -1924,7 +1927,7 @@ RiskUtil.printStackTrace(e);
                                     else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "movearmies, nomove")); }
 
                                 }
-                                else if (game.getState()==RiskGame.STATE_END_TURN) {
+                                else if (game.getState()==IRiskGame.STATE_END_TURN) {
 
                                     if (input.equals("endgo")) {
                                             if (StringT.hasMoreTokens()==false) {
@@ -1941,7 +1944,7 @@ RiskUtil.printStackTrace(e);
                                     else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "emdgo")); }
 
                                 }
-                                else if (game.getState()==RiskGame.STATE_GAME_OVER) {
+                                else if (game.getState()==IRiskGame.STATE_GAME_OVER) {
 
                                     if (input.equals("continue")) {
                                             if (StringT.hasMoreTokens()==false) {
@@ -1961,7 +1964,7 @@ RiskUtil.printStackTrace(e);
                                     }
 
                                 }
-                                else if (game.getState()==RiskGame.STATE_SELECT_CAPITAL) {
+                                else if (game.getState()==IRiskGame.STATE_SELECT_CAPITAL) {
 
                                     if (input.equals("capital")) {
                                             if (StringT.countTokens()==1) {
@@ -1991,7 +1994,7 @@ RiskUtil.printStackTrace(e);
                                     }
                                     else { throw new IllegalArgumentException(RiskUtil.replaceAll(resb.getString( "core.error.incorrect"), "{0}", "capital")); }
                                 }
-                                else if (game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
+                                else if (game.getState()==IRiskGame.STATE_DEFEND_YOURSELF) {
 
                                     if (input.equals("roll")) {
 
@@ -2061,13 +2064,13 @@ RiskUtil.printStackTrace(e);
 			if (game==null) {
 				controller.sendMessage(output, false, true );
 			}
-			else if ( game.getState()==RiskGame.STATE_NEW_GAME ) {
+			else if ( game.getState()==IRiskGame.STATE_NEW_GAME ) {
 				controller.sendMessage(output, false, true );
 			}
-			else if ( game.getState()==RiskGame.STATE_GAME_OVER ) {
+			else if ( game.getState()==IRiskGame.STATE_GAME_OVER ) {
 				controller.sendMessage(output, true, true );
 			}
-			else if (game.getState()==RiskGame.STATE_END_TURN) {
+			else if (game.getState()==IRiskGame.STATE_END_TURN) {
 				if ( game.getCurrentPlayer().getAutoEndGo() ) {
 					controller.sendMessage(output, false, false );
 				}
@@ -2081,7 +2084,7 @@ RiskUtil.printStackTrace(e);
 		}
 
 		// check to see if the players go should be ended
-		if ( game != null && game.getState()==RiskGame.STATE_END_TURN && game.getCurrentPlayer().getAutoEndGo() ) {
+		if ( game != null && game.getState()==IRiskGame.STATE_END_TURN && game.getCurrentPlayer().getAutoEndGo() ) {
 			needInput=false;
 			DoEndGo();
 		}
@@ -2095,7 +2098,7 @@ RiskUtil.printStackTrace(e);
         // TODO is this thread safe???
         private void setMap(String filename) throws Exception {
 
-            if (game.getState()==RiskGame.STATE_NEW_GAME) {
+            if (game.getState()==IRiskGame.STATE_NEW_GAME) {
 
                 boolean yesmissions = game.setMapfile(filename);
 
@@ -2157,7 +2160,7 @@ RiskUtil.printStackTrace(e);
 	 * return true ONLY if info of this Player p should be disclosed to this computer
 	 */
 	private boolean showHumanPlayerThereInfo(Player p) {
-		return game.getState()==RiskGame.STATE_GAME_OVER || ( (p != null) && ( p.getType()==Player.PLAYER_HUMAN ) && ( unlimitedLocalMode || myAddress.equals( p.getAddress() ) ) );
+		return game.getState()==IRiskGame.STATE_GAME_OVER || ( (p != null) && ( p.getType()==Player.PLAYER_HUMAN ) && ( unlimitedLocalMode || myAddress.equals( p.getAddress() ) ) );
 	}
 
         public boolean showHumanPlayerThereInfo() {
@@ -2211,7 +2214,7 @@ RiskUtil.printStackTrace(e);
 			controller.needInput( -1 );
 		}
 		// work out what to do next
-		else if ( game!=null && game.getCurrentPlayer()!=null && game.getState()!=RiskGame.STATE_GAME_OVER ) {// if player type is human or neutral or ai
+		else if ( game!=null && game.getCurrentPlayer()!=null && game.getState()!=IRiskGame.STATE_GAME_OVER ) {// if player type is human or neutral or ai
 
 
 
@@ -2219,11 +2222,11 @@ RiskUtil.printStackTrace(e);
 
 
 
-			if (game.getState()==RiskGame.STATE_TRADE_CARDS) {
+			if (game.getState()==IRiskGame.STATE_TRADE_CARDS) {
 				controller.sendMessage( RiskUtil.replaceAll(resb.getString( "core.input.newarmies"), "{0}", ((Player)game.getCurrentPlayer()).getExtraArmies() + "") , false, false);
 				//controller.armiesLeft( ((Player)game.getCurrentPlayer()).getExtraArmies() , game.NoEmptyCountries() );
 			}
-			else if (game.getState()==RiskGame.STATE_PLACE_ARMIES) {
+			else if (game.getState()==IRiskGame.STATE_PLACE_ARMIES) {
 				controller.sendMessage( RiskUtil.replaceAll(resb.getString( "core.input.armiesleft"), "{0}", ((Player)game.getCurrentPlayer()).getExtraArmies() + ""), false, false);
 				//controller.armiesLeft( ((Player)game.getCurrentPlayer()).getExtraArmies() , game.NoEmptyCountries() );
 			}
@@ -2235,7 +2238,7 @@ RiskUtil.printStackTrace(e);
 				// IF local game, OR addres match get input
 			    if ( unlimitedLocalMode || ((Player)game.getCurrentPlayer()).getAddress().equals(myAddress) ) {
 
-				if ( game.getState() == RiskGame.STATE_DEFEND_YOURSELF && game.getCurrentPlayer().getAutoDefend() ) {
+				if ( game.getState() == IRiskGame.STATE_DEFEND_YOURSELF && game.getCurrentPlayer().getAutoDefend() ) {
 
 					parser( getBasicPassiveGo() );
 
@@ -2290,7 +2293,7 @@ RiskUtil.printStackTrace(e);
 		Player winner = getWinner();
 		String text = System.getProperty("line.separator") +
 			RiskUtil.replaceAll(resb.getString("core.whowon.hehaswon"), "{0}", winner.getName());
-		if ( game.getGameMode() == RiskGame.MODE_SECRET_MISSION ) {
+		if ( game.getGameMode() == IRiskGame.MODE_SECRET_MISSION ) {
 			//There mission was: {0}
 			text=text + System.getProperty("line.separator") +
 				RiskUtil.replaceAll(resb.getString( "core.whowon.mission"), "{0}", winner.getMission().getDiscription());
@@ -2299,7 +2302,7 @@ RiskUtil.printStackTrace(e);
 	}
 
 	public Player getWinner() {
-	    if (game.getState() == RiskGame.STATE_GAME_OVER) {
+	    if (game.getState() == IRiskGame.STATE_GAME_OVER) {
 		return game.getCurrentPlayer();
 	    }
 	    return null;
@@ -2333,13 +2336,13 @@ RiskUtil.printStackTrace(e);
 		if (game == null) {
 			help = resb.getString( "core.help.newgame");
 		}
-		else if (game.getState()==RiskGame.STATE_NEW_GAME) {
+		else if (game.getState()==IRiskGame.STATE_NEW_GAME) {
 			help = resb.getString( "core.help.createplayers");
 		}
-		else if (game.getState()==RiskGame.STATE_TRADE_CARDS) {
+		else if (game.getState()==IRiskGame.STATE_TRADE_CARDS) {
 			help = help + resb.getString( "core.help.trade");
 		}
-		else if (game.getState()==RiskGame.STATE_PLACE_ARMIES) {
+		else if (game.getState()==IRiskGame.STATE_PLACE_ARMIES) {
 
 			if ( game.getSetupDone() ) { help = help + resb.getString( "core.help.placearmies"); }
 
@@ -2348,29 +2351,29 @@ RiskUtil.printStackTrace(e);
 			else { help = help + resb.getString( "core.help.placearmyempty"); }
 
 		}
-		else if (game.getState()==RiskGame.STATE_ATTACKING) {
+		else if (game.getState()==IRiskGame.STATE_ATTACKING) {
 			help = help + resb.getString( "core.help.attack");
 		}
-		else if (game.getState()==RiskGame.STATE_ROLLING) {
+		else if (game.getState()==IRiskGame.STATE_ROLLING) {
 			help = help + resb.getString( "core.help.rollorretreat");
 		}
-		else if (game.getState()==RiskGame.STATE_BATTLE_WON) {
+		else if (game.getState()==IRiskGame.STATE_BATTLE_WON) {
 			help = help + resb.getString( "core.help.youhavewon");
 		}
-		else if (game.getState()==RiskGame.STATE_FORTIFYING) {
+		else if (game.getState()==IRiskGame.STATE_FORTIFYING) {
 			help = help + resb.getString( "core.help.fortifyposition");
 		}
-		else if (game.getState()==RiskGame.STATE_END_TURN) {
+		else if (game.getState()==IRiskGame.STATE_END_TURN) {
 			help = help + resb.getString( "core.help.endgo");
 		}
-		else if (game.getState()==RiskGame.STATE_GAME_OVER) {
+		else if (game.getState()==IRiskGame.STATE_GAME_OVER) {
 			//the game is over, {0} has won! close the game to create a new one
 			help = RiskUtil.replaceAll(resb.getString( "core.help.gameover"), "{0}", ((Player)game.getCurrentPlayer()).getName());
 		}
-		else if (game.getState()==RiskGame.STATE_SELECT_CAPITAL) {
+		else if (game.getState()==IRiskGame.STATE_SELECT_CAPITAL) {
 			help = help + resb.getString( "core.help.selectcapital");
 		}
-		else if (game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
+		else if (game.getState()==IRiskGame.STATE_DEFEND_YOURSELF) {
 			help = help + resb.getString( "core.help.defendyourself");
 		}
 		else {
@@ -2429,20 +2432,20 @@ RiskUtil.printStackTrace(e);
 	}
 
         private void updateBattleState() {
-            if ((game.getState()==RiskGame.STATE_ROLLING || game.getState()==RiskGame.STATE_DEFEND_YOURSELF) && !battle) {
+            if ((game.getState()==IRiskGame.STATE_ROLLING || game.getState()==IRiskGame.STATE_DEFEND_YOURSELF) && !battle) {
                     Player attackingPlayer = game.getAttacker().getOwner();
                     Player defendingPlayer = game.getDefender().getOwner();
                     if ( showHumanPlayerThereInfo(attackingPlayer) || showHumanPlayerThereInfo(defendingPlayer) ) {
                             controller.openBattle( game.getAttacker().getColor() , game.getDefender().getColor() );
                             // we are opeing the battle at a strange point, when NODAttacker is already set, so we should update it on the battle
-                            if (game.getState()==RiskGame.STATE_DEFEND_YOURSELF) {
+                            if (game.getState()==IRiskGame.STATE_DEFEND_YOURSELF) {
                                 controller.setNODAttacker(game.getAttackerDice());
                             }
                             battle=true;
                     }
             }
             // if someone retreats
-            else if (game.getState()!=RiskGame.STATE_ROLLING && game.getState()!=RiskGame.STATE_DEFEND_YOURSELF) {
+            else if (game.getState()!=IRiskGame.STATE_ROLLING && game.getState()!=IRiskGame.STATE_DEFEND_YOURSELF) {
                     closeBattle();
             }
         }
@@ -2533,16 +2536,16 @@ RiskUtil.printStackTrace(e);
 	 */
 	public String getCurrentMission() {
 
-		if ( game.getGameMode() == RiskGame.MODE_DOMINATION ) {
+		if ( game.getGameMode() == IRiskGame.MODE_DOMINATION ) {
 			return resb.getString( "core.mission.conquerworld");
 		}
 		//else if ( game.getGameMode() == 1 ) {
 		//	return resb.getString( "core.mission.eliminateenemy");
 		//}
-		else if ( game.getGameMode() == RiskGame.MODE_CAPITAL ) {
+		else if ( game.getGameMode() == IRiskGame.MODE_CAPITAL ) {
 			return resb.getString( "core.mission.capturecapitals");
 		}
-		else if ( game.getGameMode() == RiskGame.MODE_SECRET_MISSION ) {
+		else if ( game.getGameMode() == IRiskGame.MODE_SECRET_MISSION ) {
 			return ((Mission)((Player)game.getCurrentPlayer()).getMission()).getDiscription();
 		}
 		else {
@@ -2556,12 +2559,12 @@ RiskUtil.printStackTrace(e);
 	 */
 	public int[] getPlayerColors() {
 
-                RiskGame g = game;
+                IRiskGame g = game;
 
                 // sometimes this method can get called if we close a game half way through a paint
                 if (g==null) return new int[0];
 
-		if ( g.getState() == RiskGame.STATE_DEFEND_YOURSELF ) {
+		if ( g.getState() == IRiskGame.STATE_DEFEND_YOURSELF ) {
                     Country defender = g.getDefender();
                     if (defender!=null) {
 			return new int[] { defender.getOwner().getColor() };
@@ -2600,7 +2603,7 @@ RiskUtil.printStackTrace(e);
 	 */
 	public int getCurrentPlayerColor() {
 
-		if (game != null && game.getState() != RiskGame.STATE_NEW_GAME) {
+		if (game != null && game.getState() != IRiskGame.STATE_NEW_GAME) {
 			return ((Player)game.getCurrentPlayer()).getColor();
 		}
 		else {
@@ -2628,7 +2631,7 @@ RiskUtil.printStackTrace(e);
 	 */
 	public boolean canTrade(String c1, String c2, String c3) {
 
-		if (game.getState() == RiskGame.STATE_TRADE_CARDS ) {
+		if (game.getState() == IRiskGame.STATE_TRADE_CARDS ) {
 
 			Card[] cards = game.getCards(c1,c2,c3);
 
@@ -2653,7 +2656,7 @@ RiskUtil.printStackTrace(e);
 	 * Get the present game
 	 * @return RiskGame Return the current game
 	 */
-	public RiskGame getGame() {
+	public IRiskGame getGame() {
 		return game;
 	}
 
@@ -2773,7 +2776,7 @@ RiskUtil.printStackTrace(e);
         }
 
 
-	public void newMemoryGame(RiskGame g, String map) {
+	public void newMemoryGame(IRiskGame g, String map) {
 
                 closeGame();
 
@@ -2783,10 +2786,10 @@ RiskUtil.printStackTrace(e);
                         javax.crypto.NullCipher nullCipher = new javax.crypto.NullCipher();
 
                         // @TODO, this will crash on macs
-                        game = (RiskGame) (new javax.crypto.SealedObject( g, nullCipher ).getObject( nullCipher ));
+                        game = (IRiskGame) (new javax.crypto.SealedObject( g, nullCipher ).getObject( nullCipher ));
                         game.loadMap(false, new BufferedReader(new StringReader(map)));
 
-                        for (int c=1;c<=RiskGame.MAX_PLAYERS;c++) {
+                        for (int c=1;c<=IRiskGame.MAX_PLAYERS;c++) {
                                 game.delPlayer("PLAYER"+c);
                         }
                 }
@@ -2813,7 +2816,7 @@ RiskUtil.printStackTrace(e);
             unlimitedLocalMode = onlinePlayClient==null;
         }
 
-        public void setGame(RiskGame b) {
+        public void setGame(IRiskGame b) {
                 if (game!=null) {
                     closeBattle();
                     controller.closeGame();

@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.guishared.AboutDialog;
 import net.yura.domination.engine.guishared.BrowserLauncher;
@@ -123,7 +124,7 @@ public class RiskUIUtil {
 					riskOpenURL(getRiskFileURL(doc));
 				}
 
-				public void saveGameFile(String name, RiskGame obj)
+				public void saveGameFile(String name, IRiskGame obj)
 						throws Exception {
 					saveFile(name, obj);
 				}
@@ -664,7 +665,7 @@ public class RiskUIUtil {
 
 	}
 
-	public static void saveFile(String name, RiskGame obj) throws Exception {
+	public static void saveFile(String name, IRiskGame obj) throws Exception {
 
 		// it is impossible for a applet to get here
 
@@ -731,7 +732,7 @@ public class RiskUIUtil {
 		}
 
 		return " " + RiskUtil.RISK_VERSION + " (save: " + RiskGame.SAVE_VERSION
-				+ " network: " + RiskGame.NETWORK_VERSION + ") \n" + " "
+				+ " network: " + IRiskGame.NETWORK_VERSION + ") \n" + " "
 				+ "system:" + java.util.Locale.getDefault() + " current:"
 				+ resb.getLocale() + "\n" + " " + netInfo + " \n" + " "
 				+ getOSString() + " \n" + " " + cpu + " \n" + " "

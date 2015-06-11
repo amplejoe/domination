@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,38 +28,11 @@ import net.yura.domination.engine.translation.TranslationBundle;
  * @author Yura Mamyrin
  */
 
-public class RiskGame implements Serializable { // transient
+public class RiskGame implements IRiskGame { // transient
 
 	private static final long serialVersionUID = 8L;
 	public final static String SAVE_VERSION = String.valueOf(serialVersionUID);
 
-	public final static String NETWORK_VERSION = "12";
-
-	public final static int MAX_PLAYERS = 6;
-	public final static Continent ANY_CONTINENT = new Continent("any", "any",
-			0, 0);
-
-	public final static int STATE_NEW_GAME = 0;
-	public final static int STATE_TRADE_CARDS = 1;
-	public final static int STATE_PLACE_ARMIES = 2;
-	public final static int STATE_ATTACKING = 3;
-	public final static int STATE_ROLLING = 4;
-	public final static int STATE_BATTLE_WON = 5;
-	public final static int STATE_FORTIFYING = 6;
-	public final static int STATE_END_TURN = 7;
-	public final static int STATE_GAME_OVER = 8;
-	public final static int STATE_SELECT_CAPITAL = 9;
-	public final static int STATE_DEFEND_YOURSELF = 10;
-
-	public final static int MODE_DOMINATION = 0;
-	public final static int MODE_CAPITAL = 2;
-	public final static int MODE_SECRET_MISSION = 3;
-
-	public final static int CARD_INCREASING_SET = 0;
-	public final static int CARD_FIXED_SET = 1;
-	public final static int CARD_ITALIANLIKE_SET = 2;
-
-	public final static int MAX_CARDS = 5;
 
 	/*
 	 * 
@@ -151,10 +123,14 @@ public class RiskGame implements Serializable { // transient
 
 	private Parser parser;
 
+	static IRiskGame newInstance() throws Exception {
+		return new RiskGame();
+	}
+	
 	/**
 	 * Creates a new RiskGame
 	 */
-	public RiskGame() throws Exception {
+	private RiskGame() throws Exception {
 		// Should be injected instead
 		propertyManager = new PropertyManager();
 		playerManager = new PlayerManager();
@@ -184,42 +160,54 @@ public class RiskGame implements Serializable { // transient
 		RiskUtil.RAND.setSeed(new Random().nextLong());
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getPlayerManager()
+	 */
+	@Override
 	public PlayerManager getPlayerManager() {
 		return playerManager;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#addCommand(java.lang.String)
+	 */
+	@Override
 	public void addCommand(String a) {
 
 		replayCommands.add(a);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCommands()
+	 */
+	@Override
 	public Vector getCommands() {
 
 		return replayCommands;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setCommands(java.util.Vector)
+	 */
+	@Override
 	public void setCommands(Vector replayCommands) {
 		this.replayCommands = replayCommands;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getMaxDefendDice()
+	 */
+	@Override
 	public int getMaxDefendDice() {
 		return maxDefendDice;
 	}
 
-	/**
-	 * This adds a player to the game
-	 * 
-	 * @param type
-	 *            Type of game (i.e World Domination, Secret Mission, Capital)
-	 * @param name
-	 *            Name of player
-	 * @param color
-	 *            Color of player
-	 * @return boolean Returns true if the player is added, returns false if the
-	 *         player can't be added.
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#addPlayer(int, java.lang.String, int, java.lang.String)
 	 */
+	@Override
 	public boolean addPlayer(int type, String name, int color, String a) {
 		if (gameState == STATE_NEW_GAME) { // && !name.equals("neutral") &&
 											// !(color==Color.gray)
@@ -228,14 +216,10 @@ public class RiskGame implements Serializable { // transient
 			return false;
 	}
 
-	/**
-	 * This deletes a player in the game
-	 * 
-	 * @param name
-	 *            Name of the player
-	 * @return boolean Returns true if the player is deleted, returns false if
-	 *         the player cannot be deleted
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#delPlayer(java.lang.String)
 	 */
+	@Override
 	public boolean delPlayer(String name) {
 		if (gameState == STATE_NEW_GAME) {
 			return playerManager.removePlayer(name);
@@ -244,13 +228,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
-	/**
-	 * Starts the game Risk
-	 * 
-	 * @param mode
-	 *            This represents the mode of the game: normal, 2 player,
-	 *            capital or mission
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#startGame(int, int, boolean, boolean)
 	 */
+	@Override
 	public void startGame(int mode, int card, boolean recycle, boolean threeDice)
 			throws Exception {
 
@@ -352,35 +333,28 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
-	/**
-	 * Sets the current player in the game
-	 * 
-	 * @param name
-	 *            The name of the current player
-	 * @return Player Returns the current player in the game
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setCurrentPlayer(int)
 	 */
+	@Override
 	public Player setCurrentPlayer(int c) {
 		currentPlayer = playerManager.getPlayer(c);
 		return currentPlayer;
 
 	}
 
-	/**
-	 * Gets the current player in the game
-	 * 
-	 * @return String Returns the name of a randomly picked player from the set
-	 *         of players
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getRandomPlayer()
 	 */
+	@Override
 	public int getRandomPlayer() {
 		return RiskUtil.RAND.nextInt(playerManager.getNoPlayers());
 	}
 
-	/**
-	 * Checks whether the player deserves a card during at the end of their go
-	 * 
-	 * @return String Returns the name of the card if deserves a card, else else
-	 *         returns empty speech-marks
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getDesrvedCard()
 	 */
+	@Override
 	public String getDesrvedCard() {
 		// check to see if the player deserves a new risk card
 		if (capturedCountry == true && cards.size() > 0) {
@@ -396,15 +370,18 @@ public class RiskGame implements Serializable { // transient
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#isCapturedCountry()
+	 */
+	@Override
 	public boolean isCapturedCountry() {
 		return capturedCountry;
 	}
 
-	/**
-	 * Ends a player's go
-	 * 
-	 * @return Player Returns the next player
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#endGo()
 	 */
+	@Override
 	public Player endGo() {
 
 		if (gameState == STATE_END_TURN) {
@@ -499,18 +476,10 @@ public class RiskGame implements Serializable { // transient
 		}
 	}
 
-	/**
-	 * Trades a set of cards
-	 * 
-	 * @param card1
-	 *            First card to trade
-	 * @param card2
-	 *            Second card to trade
-	 * @param card3
-	 *            Third card to trade
-	 * @return int Returns the number of armies gained from the trade, returning
-	 *         0 if the trade is unsuccessful
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#trade(net.yura.domination.engine.core.Card, net.yura.domination.engine.core.Card, net.yura.domination.engine.core.Card)
 	 */
+	@Override
 	public int trade(Card card1, Card card2, Card card3) {
 		if (gameState != STATE_TRADE_CARDS)
 			return 0;
@@ -553,52 +522,52 @@ public class RiskGame implements Serializable { // transient
 		return armies;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getTradeAbsValue(java.lang.String, java.lang.String, java.lang.String, int)
+	 */
+	@Override
 	public int getTradeAbsValue(String c1, String c2, String c3, int cardMode) {
 		return RiskUtil.getTradeAbsValue(c1, c2, c3, cardMode, cardState);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#canTrade()
+	 */
+	@Override
 	public boolean canTrade() {
 		return getBestTrade(currentPlayer.getCards(), null) > 0;
 	}
 
-	/**
-	 * Find the best (highest) trade Simple greedy search using the various
-	 * valid combinations
-	 * 
-	 * @param cards
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getBestTrade(java.util.List, net.yura.domination.engine.core.Card[])
 	 */
+	@Override
 	public int getBestTrade(List<Card> cards, Card[] bestResult) {
 		return RiskUtil.getBestTrade(cards, bestResult, getCardMode(),
 				cardState);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNewCardState()
+	 */
+	@Override
 	public int getNewCardState() {
 		return RiskUtil.getNewCardState(cardState);
 	}
 
-	/**
-	 * checks if a set of cards can be traded
-	 * 
-	 * @param card1
-	 *            First card to trade
-	 * @param card2
-	 *            Second card to trade
-	 * @param card3
-	 *            Third card to trade
-	 * @return boolean true if they can be traded false if they can not
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#checkTrade(net.yura.domination.engine.core.Card, net.yura.domination.engine.core.Card, net.yura.domination.engine.core.Card)
 	 */
+	@Override
 	public boolean checkTrade(Card card1, Card card2, Card card3) {
 		return RiskUtil.getTradeAbsValue(card1.getName(), card2.getName(),
 				card3.getName(), cardMode, cardState) > 0;
 	}
 
-	/**
-	 * Ends the trading phase by checking if the player has less than 5 cards
-	 * 
-	 * @return boolean Returns true if the player has ended the trade phase,
-	 *         returns false if the player cannot end the trade phase
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#endTrade()
 	 */
+	@Override
 	public boolean endTrade() {
 		if (canEndTrade()) {
 			gameState = STATE_PLACE_ARMIES;
@@ -611,6 +580,10 @@ public class RiskGame implements Serializable { // transient
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#canEndTrade()
+	 */
+	@Override
 	public boolean canEndTrade() {
 		if (gameState == STATE_TRADE_CARDS) {
 			// in italian rules there isn't a limit to the number of risk cards
@@ -623,17 +596,10 @@ public class RiskGame implements Serializable { // transient
 		return false;
 	}
 
-	/**
-	 * Places an army on the Country
-	 * 
-	 * @param t
-	 *            Country that the player wants to add armies to
-	 * @param n
-	 *            Number of armies the player wants to add to the country
-	 * @return boolean Returns true if the number of armies are added the
-	 *         country, returns false if the armies cannot be added to the
-	 *         territory
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#placeArmy(net.yura.domination.engine.core.Country, int)
 	 */
+	@Override
 	public int placeArmy(Country t, int n) {
 
 		int done = 0;
@@ -715,11 +681,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
-	/**
-	 * Automatically places an army on an unoccupied country
-	 * 
-	 * @return int Returns the country id which an army was added to
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getRandomCountry()
 	 */
+	@Override
 	public int getRandomCountry() {
 		if (gameState == STATE_PLACE_ARMIES) {
 			if (NoEmptyCountries()) {
@@ -745,16 +710,10 @@ public class RiskGame implements Serializable { // transient
 		throw new IllegalStateException();
 	}
 
-	/**
-	 * Attacks one country and another
-	 * 
-	 * @param t1
-	 *            Attacking country
-	 * @param t2
-	 *            Defending country
-	 * @return int[] Returns an array which determines if the player is allowed
-	 *         to roll dice
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#attack(net.yura.domination.engine.core.Country, net.yura.domination.engine.core.Country)
 	 */
+	@Override
 	public boolean attack(Country t1, Country t2) {
 
 		boolean result = false;
@@ -783,12 +742,10 @@ public class RiskGame implements Serializable { // transient
 		return result;
 	}
 
-	/**
-	 * Ends the attacking phase
-	 * 
-	 * @return boolean Returns true if the player ended the attacking phase,
-	 *         returns false if the player cannot end the attacking phase
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#endAttack()
 	 */
+	@Override
 	public boolean endAttack() {
 
 		if (gameState == STATE_ATTACKING) { // if we were in the attack phase
@@ -803,13 +760,10 @@ public class RiskGame implements Serializable { // transient
 		return false;
 	}
 
-	/**
-	 * Rolls the attackersdice
-	 * 
-	 * @param dice1
-	 *            Number of dice to be used by the attacker
-	 * @return boolean Return if the roll was successful
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#rollA(int)
 	 */
+	@Override
 	public boolean rollA(int dice1) {
 
 		if (gameState == STATE_ROLLING) { // if we were in the attacking phase
@@ -836,6 +790,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#rollD(int)
+	 */
+	@Override
 	public boolean rollD(int dice2) {
 
 		if (gameState == STATE_DEFEND_YOURSELF) { // if we were in the defending
@@ -860,33 +818,34 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getAttackerDice()
+	 */
+	@Override
 	public int getAttackerDice() {
 		return attackerDice;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getDefenderDice()
+	 */
+	@Override
 	public int getDefenderDice() {
 		return defenderDice;
 	}
 
-	/**
-	 * Get the number of rolls that have taken place in the current attack
-	 * 
-	 * @return
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getBattleRounds()
 	 */
+	@Override
 	public int getBattleRounds() {
 		return battleRounds;
 	}
 
-	/**
-	 * Rolls the defenders dice
-	 * 
-	 * @param attackerResults
-	 *            The results for the attacker
-	 * @param defenderResults
-	 *            The results for the defender
-	 * @return int[] Returns an array which will determine the results of the
-	 *         attack
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#battle(int[], int[])
 	 */
+	@Override
 	public int[] battle(int[] attackerResults, int[] defenderResults) {
 
 		int[] result = new int[6];
@@ -993,14 +952,10 @@ public class RiskGame implements Serializable { // transient
 		return result;
 	}
 
-	/**
-	 * Moves a number of armies from the attacking country to defending country
-	 * 
-	 * @param noa
-	 *            Number of armies to be moved
-	 * @return 1 or 2 if you can move the number of armies across (2 if you won
-	 *         the game), returns 0 if you cannot
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#moveArmies(int)
 	 */
+	@Override
 	public int moveArmies(int noa) {
 
 		if (gameState == STATE_BATTLE_WON && mustmove > 0 && noa >= mustmove
@@ -1020,12 +975,10 @@ public class RiskGame implements Serializable { // transient
 		return 0;
 	}
 
-	/**
-	 * Moves all of armies from the attacking country to defending country
-	 * 
-	 * @return int Return trues if you can move the number of armies across,
-	 *         returns false if you cannot
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#moveAll()
 	 */
+	@Override
 	public int moveAll() {
 
 		if (gameState == STATE_BATTLE_WON && mustmove > 0) {
@@ -1037,16 +990,18 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getMustMove()
+	 */
+	@Override
 	public int getMustMove() {
 		return mustmove;
 	}
 
-	/**
-	 * Retreats from attacking a country
-	 * 
-	 * @return boolean Returns true if you can retreat, returns false if you
-	 *         cannot
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#retreat()
 	 */
+	@Override
 	public boolean retreat() {
 
 		if (gameState == STATE_ROLLING) { // if we were in the attacking phase
@@ -1064,19 +1019,10 @@ public class RiskGame implements Serializable { // transient
 		return false;
 	}
 
-	/**
-	 * Moves armies from one country to an adjacent country and goes to the end
-	 * phase
-	 * 
-	 * @param t1
-	 *            Country where the armies are moving from
-	 * @param t2
-	 *            Country where the armies are moving to
-	 * @param noa
-	 *            Number of Armies to move
-	 * @return boolean Returns true if the tactical move is allowed, returns
-	 *         false if the tactical move is not allowed
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#moveArmy(net.yura.domination.engine.core.Country, net.yura.domination.engine.core.Country, int)
 	 */
+	@Override
 	public boolean moveArmy(Country t1, Country t2, int noa) {
 		if (gameState == STATE_FORTIFYING) {
 
@@ -1104,12 +1050,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
-	/**
-	 * Choosing not to use the tactical move and moves to the end phase
-	 * 
-	 * @return boolean Returns true if you are in the right phase to use the
-	 *         tactical move and returns false otherwise
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#noMove()
 	 */
+	@Override
 	public boolean noMove() {
 
 		if (gameState == STATE_FORTIFYING) { // if we were in the move phase
@@ -1122,6 +1066,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#workOutEndGoStats(net.yura.domination.engine.core.Player)
+	 */
+	@Override
 	public void workOutEndGoStats(Player p) {
 
 		int countries = p.getNoTerritoriesOwned();
@@ -1135,14 +1083,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
-	/**
-	 * Sets the capital for a player - ONLY FOR CAPITAL RISK
-	 * 
-	 * @param c
-	 *            The capital country
-	 * @return boolean Returns true if the country is set as the capital,
-	 *         returns false otherwise
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setCapital(net.yura.domination.engine.core.Country)
 	 */
+	@Override
 	public boolean setCapital(Country c) {
 
 		if (gameState == STATE_SELECT_CAPITAL && gameMode == 2
@@ -1169,12 +1113,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
-	/**
-	 * Check if a player has won the game
-	 * 
-	 * @return boolean Returns true if the player has won the game, returns
-	 *         false otherwise
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#checkPlayerWon()
 	 */
+	@Override
 	public boolean checkPlayerWon() {
 
 		boolean result = false;
@@ -1343,6 +1285,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#canContinue()
+	 */
+	@Override
 	public boolean canContinue() {
 
 		if (gameState == STATE_GAME_OVER && gameMode != MODE_DOMINATION
@@ -1360,6 +1306,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#continuePlay()
+	 */
+	@Override
 	public boolean continuePlay() {
 
 		if (canContinue()) {
@@ -1380,6 +1330,10 @@ public class RiskGame implements Serializable { // transient
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getClosestCountry(int, int)
+	 */
+	@Override
 	public int getClosestCountry(int x, int y) {
 		Country closestCountryCanvas = null;
 		int closestDistance = Integer.MAX_VALUE;
@@ -1395,18 +1349,18 @@ public class RiskGame implements Serializable { // transient
 		return closestCountryCanvas.getColor();
 	}
 
-	/**
-	 * Loads the map
-	 * 
-	 * @param filename
-	 *            The map filename
-	 * @throws Exception
-	 *             There was a error
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#loadMap()
 	 */
+	@Override
 	public void loadMap() throws Exception {
 		loadMap(true, null);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#loadMap(boolean, java.io.BufferedReader)
+	 */
+	@Override
 	public void loadMap(boolean cleanLoad, BufferedReader bufferin)
 			throws Exception {
 		Parser.MapResult result = parser.parseMap(mapfile, bufferin, cleanLoad, countries, continents);
@@ -1419,15 +1373,10 @@ public class RiskGame implements Serializable { // transient
 				new Continent[result.getContinents().size()]);
 	}
 
-	/**
-	 * Sets the filename of the map file
-	 * 
-	 * @param f
-	 *            The name of the new file
-	 * @return boolean Return trues if missions are supported
-	 * @throws Exception
-	 *             The file cannot be found
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setMapfile(java.lang.String)
 	 */
+	@Override
 	public boolean setMapfile(String f) throws Exception {
 		Parser.MapFileResult result = parser.parseMapFile(f, defaultMap,
 				defaultCards);
@@ -1437,10 +1386,10 @@ public class RiskGame implements Serializable { // transient
 		return result.isMissions();
 	}
 
-	/**
-	 * we need to call this if we do not want to reload data from disk when we
-	 * start a game
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setMemoryLoad()
 	 */
+	@Override
 	public void setMemoryLoad() {
 
 		mapfile = null;
@@ -1450,6 +1399,10 @@ public class RiskGame implements Serializable { // transient
 		imageMap = null;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setupNewMap()
+	 */
+	@Override
 	public void setupNewMap() {
 
 		countries = new Country[0];
@@ -1468,22 +1421,26 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setCountries(net.yura.domination.engine.core.Country[])
+	 */
+	@Override
 	public void setCountries(Country[] a) {
 		countries = a;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setContinents(net.yura.domination.engine.core.Continent[])
+	 */
+	@Override
 	public void setContinents(Continent[] a) {
 		continents = a;
 	}
 
-	/**
-	 * Loads the cards
-	 * 
-	 * @param filename
-	 *            The cards filename
-	 * @throws Exception
-	 *             There was a error
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#loadCards(boolean)
 	 */
+	@Override
 	public void loadCards(boolean rawLoad) throws Exception {
 
 		StringTokenizer st = null;
@@ -1680,24 +1637,20 @@ public class RiskGame implements Serializable { // transient
 		}
 	}
 
-	/**
-	 * Sets the filename of the cards file
-	 * 
-	 * @param f
-	 *            The name of the new file
-	 * @return boolean Return trues if missions are supported
-	 * @throws Exception
-	 *             The file cannot be found
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setCardsfile(java.lang.String)
 	 */
+	@Override
 	public boolean setCardsfile(String f) throws Exception {
 		Parser.CardsResult result = parser.parseCards(f, defaultCards);
 		cardsfile = result.getCardsFile();
 		return result.isMissions();
 	}
 
-	/**
-	 * Shuffles the countries
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#shuffleCountries()
 	 */
+	@Override
 	public List shuffleCountries() {
 
 		// we create a COPY of the Countries array, so that we do not mess up
@@ -1763,13 +1716,10 @@ public class RiskGame implements Serializable { // transient
 	 *         }
 	 */
 
-	/**
-	 * Saves the current game to a file
-	 * 
-	 * @param file
-	 *            The filename of the save
-	 * @return boolean Return trues if you saved, returns false if you cannot
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#saveGame(java.io.OutputStream)
 	 */
+	@Override
 	public void saveGame(OutputStream file) throws Exception { // added RiskGame
 																// parameter g,
 																// so remember
@@ -1787,21 +1737,18 @@ public class RiskGame implements Serializable { // transient
 		// e.close();
 	}
 
-	/**
-	 * Gets the state of the game
-	 * 
-	 * @return int Returns the game state
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getState()
 	 */
+	@Override
 	public int getState() {
 		return gameState;
 	}
 
-	/**
-	 * Checks if there are any empty countries
-	 * 
-	 * @return boolean Return trues if no empty countries, returns false
-	 *         otherwise
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#NoEmptyCountries()
 	 */
+	@Override
 	public boolean NoEmptyCountries() {
 
 		// find out if there are any empty countries
@@ -1824,48 +1771,42 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
-	/**
-	 * Checks if the set up is completely
-	 * 
-	 * @return boolean Return trues if the set up is complete, returns false
-	 *         otherwise
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getSetupDone()
 	 */
+	@Override
 	public boolean getSetupDone() {
 		return setup == playerManager.getNoPlayers();
 	}
 
-	/**
-	 * get the value od the trade-cap
-	 * 
-	 * @return boolean Return trues if tradecap is true and false otherwise
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getTradeCap()
 	 */
+	@Override
 	public boolean getTradeCap() {
 		return tradeCap;
 	}
 
-	/**
-	 * Gets the game mode
-	 * 
-	 * @return int Return the game mode
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getGameMode()
 	 */
+	@Override
 	public int getGameMode() {
 		return gameMode;
 	}
 
-	/**
-	 * Gets the current player
-	 * 
-	 * @return player Return the current player
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCurrentPlayer()
 	 */
+	@Override
 	public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
 
-	/**
-	 * Gets all the players
-	 * 
-	 * @return Vector Return all the players
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getPlayersStats()
 	 */
+	@Override
 	public List<Player> getPlayersStats() {
 
 		for (int c = 0; c < playerManager.getNoPlayers(); c++) {
@@ -1875,79 +1816,100 @@ public class RiskGame implements Serializable { // transient
 		return playerManager.getPlayers();
 	}
 
-	/**
-	 * Gets the attacking country
-	 * 
-	 * @return Country the attacking country
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getAttacker()
 	 */
+	@Override
 	public Country getAttacker() {
 		return attacker;
 	}
 
-	/**
-	 * Gets the defending country
-	 * 
-	 * @return Country the defending country
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getDefender()
 	 */
+	@Override
 	public Country getDefender() {
 		return defender;
 	}
 
-	/**
-	 * Gets the ImagePic
-	 * 
-	 * @return URL ImagePic
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getImagePic()
 	 */
+	@Override
 	public String getImagePic() {
 		return imagePic;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getPreviewPic()
+	 */
+	@Override
 	public String getPreviewPic() {
 		return previewPic;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#setPreviewPic(java.lang.String)
+	 */
+	@Override
 	public void setPreviewPic(String prv) {
 		previewPic = prv;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getPropertyManager()
+	 */
+	@Override
 	public PropertyManager getPropertyManager() {
 		return propertyManager;
 	}
 
-	/**
-	 * Gets the ImageMap
-	 * 
-	 * @return URL ImageMap
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getImageMap()
 	 */
+	@Override
 	public String getImageMap() {
 		return imageMap;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCardsFile()
+	 */
+	@Override
 	public String getCardsFile() {
 		return cardsfile; // .getFile().substring(
 							// cardsfile.getFile().lastIndexOf("/")+1 );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getMapFile()
+	 */
+	@Override
 	public String getMapFile() {
 		return mapfile; // .getFile().substring(
 						// mapfile.getFile().lastIndexOf("/")+1 );
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCards()
+	 */
+	@Override
 	public Vector getCards() {
 		return cards;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getUsedCards()
+	 */
+	@Override
 	public Vector getUsedCards() {
 		return usedCards;
 	}
 
-	/**
-	 * Gets the number of continents which are owned by a player
-	 * 
-	 * @param p
-	 *            The player you want to find continents for
-	 * @return int Return the number of continents a player owns
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNoContinentsOwned(net.yura.domination.engine.core.Player)
 	 */
+	@Override
 	public int getNoContinentsOwned(Player p) {
 
 		int total = 0;
@@ -2007,9 +1969,10 @@ public class RiskGame implements Serializable { // transient
 	 *         }//public Country getCountryByName(String name)
 	 */
 
-	/**
-	 * returns the country with the given color (ID)
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCountryInt(int)
 	 */
+	@Override
 	public Country getCountryInt(int color) {
 
 		if (color <= 0 || color > countries.length) {
@@ -2031,13 +1994,10 @@ public class RiskGame implements Serializable { // transient
 	 * return getCountryInt(nId); }//public Country getCountryInt(String nId)
 	 */
 
-	/**
-	 * Gets a cards
-	 * 
-	 * @param name
-	 * @return Card Return the card you are looking for, if it exists. Otherwise
-	 *         returns null
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCards(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public Card[] getCards(String name1, String name2, String name3) {
 
 		Card[] c = new Card[3];
@@ -2079,6 +2039,10 @@ public class RiskGame implements Serializable { // transient
 
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#findCardAndRemoveIt(java.lang.String)
+	 */
+	@Override
 	public Card findCardAndRemoveIt(String name) {
 
 		int cardIndex = -1;
@@ -2132,62 +2096,69 @@ public class RiskGame implements Serializable { // transient
 		return false;
 	}
 
-	/**
-	 * Gets the countries in the game
-	 * 
-	 * @return Vector Return the Countries in the current game
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCountries()
 	 */
+	@Override
 	public Country[] getCountries() {
 
 		return countries;
 	}
 
-	/**
-	 * Gets the continents in the game
-	 * 
-	 * @return Vector Return the Continents in the current game
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getContinents()
 	 */
+	@Override
 	public Continent[] getContinents() {
 		return continents;
 	}
 
-	/**
-	 * Gets the number of countries in the game
-	 * 
-	 * @return int Return the number of countries in the current game
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNoCountries()
 	 */
+	@Override
 	public int getNoCountries() {
 		return countries.length;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNoContinents()
+	 */
+	@Override
 	public int getNoContinents() {
 
 		return continents.length;
 
 	}
 
-	/**
-	 * Gets the allocated Missions in the game
-	 * 
-	 * @return Vector Return the Missions in the current game
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getMissions()
 	 */
+	@Override
 	public Vector getMissions() {
 		return missions;
 	}
 
-	/**
-	 * Gets the number of Missions in the game
-	 * 
-	 * @return int Return the number of Missions in the game
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNoMissions()
 	 */
+	@Override
 	public int getNoMissions() {
 		return missions.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNoCards()
+	 */
+	@Override
 	public int getNoCards() {
 		return cards.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#isRecycleCards()
+	 */
+	@Override
 	public boolean isRecycleCards() {
 		return recycleCards;
 	}
@@ -2214,13 +2185,18 @@ public class RiskGame implements Serializable { // transient
 		return defaultCards;
 	}
 
-	/**
-	 * @return the current Card Mode
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getCardMode()
 	 */
+	@Override
 	public int getCardMode() {
 		return cardMode;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNoAttackDice()
+	 */
+	@Override
 	public int getNoAttackDice() {
 		if (attacker.getArmies() > 4) {
 			return 3;
@@ -2229,6 +2205,10 @@ public class RiskGame implements Serializable { // transient
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.yura.domination.engine.core.IRiskGame#getNoDefendDice()
+	 */
+	@Override
 	public int getNoDefendDice() {
 		if (defender.getArmies() > maxDefendDice) {
 			return maxDefendDice;

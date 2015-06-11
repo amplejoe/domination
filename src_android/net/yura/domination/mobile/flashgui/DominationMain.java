@@ -16,7 +16,7 @@ import java.util.prefs.Preferences;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.ai.AIManager;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapUpdateService;
@@ -86,7 +86,7 @@ public class DominationMain extends Midlet {
                 public void addInfoForSubmit(Map map) {
                     Risk r = risk;
                     if (r != null) {
-                        RiskGame game = r.getGame();
+                        IRiskGame game = r.getGame();
                         if (game != null) {
                             map.put("gameLog", new LogList( game.getCommands() ));
                         }

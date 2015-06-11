@@ -3,7 +3,8 @@
 package net.yura.domination.engine;
 
 import java.util.Vector;
-import net.yura.domination.engine.core.RiskGame;
+
+import net.yura.domination.engine.core.IRiskGame;
 
 /**
  * <p> Risk Controller </p>
@@ -221,7 +222,7 @@ public class RiskController {
 //        }
 //    }
 
-    public void showMapPic(RiskGame p) {
+    public void showMapPic(IRiskGame p) {
 
         Object[] arrLocal;
 

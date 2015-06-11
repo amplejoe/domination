@@ -5,7 +5,7 @@ import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskListener;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.lobby.mini.MiniLobbyRisk;
 import net.yura.domination.mobile.flashgui.DominationMain.GooglePlayGameServices;
 import net.yura.mobile.gui.ActionListener;
@@ -202,7 +202,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
     }
 
     @Override
-    public void showMapPic(RiskGame p) {
+    public void showMapPic(IRiskGame p) {
         gameSetup.showMapPic(p.getMapFile());
     }
 
@@ -225,7 +225,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
 
         // if for some strange reason this dialog is open and we need some other input, close it
         // this can happen if we timeout in a game during battle won move stage
-        if (s!=RiskGame.STATE_BATTLE_WON && move!=null && move.isVisible()) {
+        if (s!=IRiskGame.STATE_BATTLE_WON && move!=null && move.isVisible()) {
             move.setVisible(false);
         }
 
@@ -233,13 +233,13 @@ public class MiniFlashRiskAdapter implements RiskListener {
                 gameFrame.needInput(s);
 
                 switch(s) {
-                    case RiskGame.STATE_ROLLING:
+                    case IRiskGame.STATE_ROLLING:
                         battle.needInput(myRisk.getGame().getNoAttackDice(), true);
                         break;
-                    case RiskGame.STATE_DEFEND_YOURSELF:
+                    case IRiskGame.STATE_DEFEND_YOURSELF:
                         battle.needInput(myRisk.getGame().getNoDefendDice(), false);
                         break;
-                    case RiskGame.STATE_BATTLE_WON:
+                    case IRiskGame.STATE_BATTLE_WON:
                         if (move==null) {
                             move = new MoveDialog(myRisk) {
                                 @Override
@@ -251,7 +251,7 @@ public class MiniFlashRiskAdapter implements RiskListener {
                                 }
                             };
                         }
-                        RiskGame game = myRisk.getGame();
+                        IRiskGame game = myRisk.getGame();
                         int min = game.getMustMove();
                         int c1num = game.getAttacker().getColor();
                         int c2num = game.getDefender().getColor();

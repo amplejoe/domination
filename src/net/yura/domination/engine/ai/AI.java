@@ -1,6 +1,6 @@
 package net.yura.domination.engine.ai;
 
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 
 /**
  * @author Yura Mamyrin
@@ -10,7 +10,7 @@ public interface AI {
     int getType();
     String getCommand();
 
-    void setGame(RiskGame game);
+    void setGame(IRiskGame game);
 
     String getBattleWon();
     String getTacMove();

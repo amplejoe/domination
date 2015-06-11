@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -26,11 +27,13 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+
 import net.yura.domination.engine.OnlineRisk;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskIO;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
 import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
@@ -70,7 +73,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
                     public void openDocs(String doc) throws Exception {
                             openURL( new URL( LobbyClientGUI.getCodeBase(), RISK_PATH+doc) );
                     }
-                    public void saveGameFile(String name, RiskGame obj) throws Exception {
+                    public void saveGameFile(String name, IRiskGame obj) throws Exception {
                         throw new UnsupportedOperationException("Not supported yet.");
                     }
                     public InputStream loadGameFile(String file) throws Exception {
@@ -316,7 +319,7 @@ public class ClientGameRisk extends TurnBasedAdapter implements OnlineRisk {
 	}
 
 	public void gameObject(Object object) {
-            if (object instanceof RiskGame) {
+            if (object instanceof IRiskGame) {
                 RiskGame thegame = (RiskGame)object;
                 Player player = thegame.getPlayerManager().getPlayer(lgml.whoAmI());
                 String address = player==null?"_watch_":player.getAddress();

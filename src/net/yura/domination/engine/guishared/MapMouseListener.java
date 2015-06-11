@@ -1,7 +1,7 @@
 package net.yura.domination.engine.guishared;
 
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 
 /**
  * @author Yura Mamyrin
@@ -25,12 +25,12 @@ public class MapMouseListener {
         if (pixColor == NO_COUNTRY ) {
 
         }
-        else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+        else if (gameState == IRiskGame.STATE_PLACE_ARMIES) {
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.getGame().NoEmptyCountries() || myrisk.hasArmiesInt(pixColor) == 0) ) {
                         return new int[] {pixColor};
                 }
         }
-        else if (gameState == RiskGame.STATE_ATTACKING) {
+        else if (gameState == IRiskGame.STATE_ATTACKING) {
 
                 if ( pixColor == pp.getC1() ) {
                         pp.setC1(NO_COUNTRY);
@@ -51,7 +51,7 @@ public class MapMouseListener {
                 }
 
         }
-        else if (gameState == RiskGame.STATE_FORTIFYING) {
+        else if (gameState == IRiskGame.STATE_FORTIFYING) {
 
                 if ( pp.getC1()!=NO_COUNTRY && pp.getC2()==NO_COUNTRY && pixColor == pp.getC1() ) {
                         pp.setC1(NO_COUNTRY);
@@ -78,7 +78,7 @@ public class MapMouseListener {
                 }
 
         }
-        else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+        else if (gameState == IRiskGame.STATE_SELECT_CAPITAL) {
 
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) ) {
                         pp.setC1(pixColor);
@@ -104,12 +104,12 @@ public class MapMouseListener {
         if (pixColor == NO_COUNTRY ) {
 
         }
-        else if (gameState == RiskGame.STATE_PLACE_ARMIES) {
+        else if (gameState == IRiskGame.STATE_PLACE_ARMIES) {
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.getGame().NoEmptyCountries() || myrisk.hasArmiesInt(pixColor) == 0) ) {
                         cc = pixColor;
                 }
         }
-        else if ( gameState == RiskGame.STATE_ATTACKING) {
+        else if ( gameState == IRiskGame.STATE_ATTACKING) {
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1) ) {
                         cc = pixColor;
                 }
@@ -117,7 +117,7 @@ public class MapMouseListener {
                         cc = pixColor;
                 }
         }
-        else if ( gameState == RiskGame.STATE_FORTIFYING) {
+        else if ( gameState == IRiskGame.STATE_FORTIFYING) {
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) && (myrisk.hasArmiesInt(pixColor) > 1 && pp.getC1() == NO_COUNTRY ) ) {
                         cc = pixColor;
                 }
@@ -128,7 +128,7 @@ public class MapMouseListener {
 			cc = pixColor;
 		}
         }
-        else if (gameState == RiskGame.STATE_SELECT_CAPITAL) {
+        else if (gameState == IRiskGame.STATE_SELECT_CAPITAL) {
                 if ( myrisk.isOwnedCurrentPlayerInt(pixColor) ) {
                         cc = pixColor;
                 }

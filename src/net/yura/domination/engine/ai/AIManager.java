@@ -3,8 +3,9 @@ package net.yura.domination.engine.ai;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import net.yura.domination.engine.Risk;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.util.Service;
 
 public class AIManager {
@@ -40,14 +41,14 @@ public class AIManager {
     }
 
     public void play(Risk risk) {
-            RiskGame game = risk.getGame();
+            IRiskGame game = risk.getGame();
             String output = getOutput(game, game.getCurrentPlayer().getType() );
             try { Thread.sleep(wait); }
             catch(InterruptedException e) {}
             risk.parser(output);
     }
 
-    public String getOutput(RiskGame game,int type) {
+    public String getOutput(IRiskGame game,int type) {
 
             AI usethisAI=ais.get(type);
 
@@ -60,17 +61,17 @@ public class AIManager {
             String output=null;
 
             switch ( game.getState() ) {
-                    case RiskGame.STATE_TRADE_CARDS:	output = usethisAI.getTrade(); break;
-                    case RiskGame.STATE_PLACE_ARMIES:	output = usethisAI.getPlaceArmies(); break;
-                    case RiskGame.STATE_ATTACKING:	output = usethisAI.getAttack(); break;
-                    case RiskGame.STATE_ROLLING:	output = usethisAI.getRoll(); break;
-                    case RiskGame.STATE_BATTLE_WON:	output = usethisAI.getBattleWon(); break;
-                    case RiskGame.STATE_FORTIFYING:	output = usethisAI.getTacMove(); break;
-                    case RiskGame.STATE_SELECT_CAPITAL:	output = usethisAI.getCapital(); break;
-                    case RiskGame.STATE_DEFEND_YOURSELF:output = usethisAI.getAutoDefendString(); break;
-                    case RiskGame.STATE_END_TURN:	output = "endgo"; break;
+                    case IRiskGame.STATE_TRADE_CARDS:	output = usethisAI.getTrade(); break;
+                    case IRiskGame.STATE_PLACE_ARMIES:	output = usethisAI.getPlaceArmies(); break;
+                    case IRiskGame.STATE_ATTACKING:	output = usethisAI.getAttack(); break;
+                    case IRiskGame.STATE_ROLLING:	output = usethisAI.getRoll(); break;
+                    case IRiskGame.STATE_BATTLE_WON:	output = usethisAI.getBattleWon(); break;
+                    case IRiskGame.STATE_FORTIFYING:	output = usethisAI.getTacMove(); break;
+                    case IRiskGame.STATE_SELECT_CAPITAL:	output = usethisAI.getCapital(); break;
+                    case IRiskGame.STATE_DEFEND_YOURSELF:output = usethisAI.getAutoDefendString(); break;
+                    case IRiskGame.STATE_END_TURN:	output = "endgo"; break;
 
-                    case RiskGame.STATE_GAME_OVER: throw new IllegalStateException("AI error: game is over");
+                    case IRiskGame.STATE_GAME_OVER: throw new IllegalStateException("AI error: game is over");
                     default: throw new IllegalStateException("AI error: unknown state "+ game.getState() );
             }
 

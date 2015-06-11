@@ -7,12 +7,15 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JDialog;
+
 import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Graphics;
+
 import javax.swing.JScrollPane;
+
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Image;
@@ -34,11 +37,12 @@ import java.text.AttributedCharacterIterator;
 import java.awt.font.TextAttribute;
 import java.awt.Component;
 import java.util.List;
+
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
-import net.yura.domination.engine.core.RiskGame;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.guishared.PicturePanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 
@@ -277,10 +281,10 @@ public class CardsDialog extends JDialog {
 
 	public String getNumArmies() {
             // return resb.getString("cards.nexttrade").replaceAll( "\\{0\\}", "" + resb.getString("cards.fixed"));
-            if(myrisk.getGame().getCardMode()==RiskGame.CARD_FIXED_SET) {
+            if(myrisk.getGame().getCardMode()==IRiskGame.CARD_FIXED_SET) {
 		 return resb.getString("cards.fixed");
             }
-            else if(myrisk.getGame().getCardMode()==RiskGame.CARD_ITALIANLIKE_SET) {
+            else if(myrisk.getGame().getCardMode()==IRiskGame.CARD_ITALIANLIKE_SET) {
 		 return resb.getString("cards.italianlike");
             }
             else {

@@ -43,9 +43,9 @@ import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Mission;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
 
 /**
  * <p> Options Dialog for SwingGUI </p>
@@ -56,7 +56,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
     private MapEditorPanel editPanel;
 
-    private RiskGame map;
+    private IRiskGame map;
 
     private JList countriesList;
     private JList continentsList;
@@ -184,7 +184,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 
     }
 
-    public void setMap(RiskGame m) {
+    public void setMap(IRiskGame m) {
 
 	map = m;
 
@@ -860,7 +860,7 @@ public class MapEditorViews extends JDialog implements ActionListener,ListSelect
 	private JComboBox makeContinentsJComboBox() {
 
 		JComboBox a = new JComboBox( map.getContinents() );
-		a.insertItemAt(RiskGame.ANY_CONTINENT,0);
+		a.insertItemAt(IRiskGame.ANY_CONTINENT,0);
 		a.insertItemAt(null,0);
 		return a;
 

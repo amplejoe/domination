@@ -4,10 +4,11 @@ package net.yura.domination.engine.ai;
 
 import java.util.List;
 import java.util.Random;
+
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Country;
+import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
 
 /**
  * THIS IS NOT A REAL AI, THIS IS WHAT A HUMAN PLAYER THAT HAS RESIGNED FROM A GAME BECOMES
@@ -24,14 +25,14 @@ public class AISubmissive implements AI {
         return "crap";
     }
 
-    public void setGame(RiskGame game) {
+    public void setGame(IRiskGame game) {
         this.game = game;
         player = game.getCurrentPlayer();
     }
 
     protected Random r = new Random(); // this was always static
 
-    protected RiskGame game;
+    protected IRiskGame game;
     protected Player player;
 
     public String getBattleWon() {
