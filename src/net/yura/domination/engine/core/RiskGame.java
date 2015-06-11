@@ -1136,34 +1136,6 @@ public class RiskGame implements Serializable { // transient
 	}
 
 	/**
-	 * For backwards compatibility (Android).
-	 * 
-	 * @param p
-	 * @return
-	 * @deprecated Use {@link RiskUtil#getConnectedEmpire(Player)} instead.
-	 */
-	@Deprecated
-	public List getConnectedEmpire(Player p) {
-		return RiskUtil.getConnectedEmpire(p);
-	}
-
-	/**
-	 * For backwards compatibility (Android).
-	 * 
-	 * @param t
-	 * @param a
-	 * @param n
-	 * @param p
-	 * @deprecated Use
-	 *             {@link RiskUtil#getConnectedEmpire(List, List, List, Player)}
-	 *             instead.
-	 */
-	@Deprecated
-	public void getConnectedEmpire(List t, List a, List n, Player p) {
-		RiskUtil.getConnectedEmpire(t, a, n, p);
-	}
-
-	/**
 	 * Sets the capital for a player - ONLY FOR CAPITAL RISK
 	 * 
 	 * @param c
