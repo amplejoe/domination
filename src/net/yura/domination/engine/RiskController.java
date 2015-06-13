@@ -11,7 +11,7 @@ import net.yura.domination.engine.core.IRiskGame;
  * @author Yura Mamyrin
  */
 
-public class RiskController {
+public class RiskController implements RiskListener {
 
     private Vector obs;
 

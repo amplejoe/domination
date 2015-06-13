@@ -44,7 +44,7 @@ import net.yura.mobile.util.Url;
  * <p> Main Risk Class </p>
  * @author Yura Mamyrin
  */
-public class Risk extends Thread {
+public class Risk extends Thread implements IRiskOnline, IRiskChat {
 
         private final int SHOW_DICE_SLEEP = 1000;
         private final int ROLL_DICE_SLEEP = 500;
@@ -271,6 +271,7 @@ public class Risk extends Thread {
             addToInbox( new GameCommand(GameCommand.UI_COMMAND, m ) );
 	}
 
+	@Override
         public void parserFromNetwork(String m) {
             addToInbox( new GameCommand(GameCommand.NETWORK_COMMAND, m ) );
 	}
@@ -2420,6 +2421,7 @@ RiskUtil.printStackTrace(e);
             skipUndo = skip;
         }
 
+        @Override
 	public void disconnected() {
 
 		//System.out.print("Got kicked off the server!\n");
@@ -2811,11 +2813,13 @@ RiskUtil.printStackTrace(e);
                 unlimitedLocalMode = true;
 	}
 
+	@Override
         public void setOnlinePlay(OnlineRisk online) {
             onlinePlayClient = online;
             unlimitedLocalMode = onlinePlayClient==null;
         }
 
+	@Override
         public void setGame(IRiskGame b) {
                 if (game!=null) {
                     closeBattle();
@@ -2863,6 +2867,7 @@ RiskUtil.printStackTrace(e);
                 }
         }
 
+        @Override
         public void setAddress(String address) {
             myAddress = address;
         }

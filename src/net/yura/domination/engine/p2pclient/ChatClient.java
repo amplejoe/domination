@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import net.yura.domination.engine.IRiskChat;
 import net.yura.domination.engine.OnlineRisk;
-import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.RiskGame;
 
@@ -23,7 +23,7 @@ public class ChatClient implements OnlineRisk {
 	private Socket chatSocket = null;
 	private ChatDisplayThread myReader = null;
 
-        public ChatClient(Risk risk,String uid,String host, int port) throws Exception {
+        public ChatClient(IRiskChat risk,String uid,String host, int port) throws Exception {
                 myUID = uid;
 
                 chatSocket = new Socket( host , port);

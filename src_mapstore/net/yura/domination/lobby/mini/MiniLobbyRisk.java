@@ -6,14 +6,12 @@ import java.util.Observer;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
+import net.yura.domination.engine.IRiskOnline;
 import net.yura.domination.engine.OnlineRisk;
-import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.IRiskGame;
 import net.yura.domination.engine.core.Player;
-import net.yura.domination.engine.core.RiskGame;
 import net.yura.domination.engine.translation.TranslationBundle;
-import net.yura.domination.mapstore.GetMap;
 import net.yura.domination.mapstore.Map;
 import net.yura.domination.mapstore.MapChooser;
 import net.yura.domination.mapstore.MapServerClient;
@@ -30,14 +28,14 @@ import net.yura.swingme.core.CoreUtil;
 /**
  * @author Yura Mamyrin
  */
-public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
+public abstract class MiniLobbyRisk implements MiniLobbyGame, OnlineRisk {
 
     private static final Logger logger = Logger.getLogger( MiniLobbyRisk.class.getName() );
 
-    private Risk myrisk;
+    private IRiskOnline myrisk;
     protected MiniLobbyClient lobby;
 
-    public MiniLobbyRisk(Risk risk) {
+    public MiniLobbyRisk(IRiskOnline risk) {
         myrisk = risk;
     }
 
@@ -82,7 +80,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
 
     public void objectForGame(Object object) {
         if (object instanceof IRiskGame) {
-            RiskGame thegame = (RiskGame)object;
+            IRiskGame thegame = (IRiskGame)object;
             Player player = thegame.getPlayerManager().getPlayer(lobby.whoAmI());
             String address = player==null?"_watch_":player.getAddress();
             myrisk.setOnlinePlay(this);
@@ -97,7 +95,7 @@ public abstract class MiniLobbyRisk implements MiniLobbyGame,OnlineRisk {
             String command = (String)map.get("command");
             if ("game".equals(command)) {
                 String address = (String)map.get("playerId");
-                RiskGame thegame = (RiskGame)map.get("game");
+                IRiskGame thegame = (IRiskGame)map.get("game");
                 myrisk.setOnlinePlay(this);
                 myrisk.setAddress(address);
                 myrisk.setGame(thegame);

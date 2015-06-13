@@ -4,7 +4,8 @@ package net.yura.domination.engine.p2pclient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import net.yura.domination.engine.Risk;
+
+import net.yura.domination.engine.IRiskChat;
 
 /**
  * <p> Display Thread </p>
@@ -16,10 +17,10 @@ import net.yura.domination.engine.Risk;
  // appends the output to a TextArea object
 
 public class ChatDisplayThread extends Thread {    
-   Risk risk; 
+	IRiskChat risk; 
    BufferedReader inChat = null;
 
-    ChatDisplayThread (Risk r, BufferedReader in) { 
+    ChatDisplayThread (IRiskChat r, BufferedReader in) { 
         super("ChatDisplayThread");
         risk = r;
         inChat = in; 
