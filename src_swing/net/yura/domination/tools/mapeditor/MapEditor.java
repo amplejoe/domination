@@ -125,7 +125,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	// if ever set to true, there must be a check for this added to the check method
 	private boolean strictcards;
 
-        private SwingGUIPanel panel;
+        private SwingGUIPanel swingGuiPanel;
 
 	// i still bother with gif, coz java still is wrong sometimes when reading png color
 	// not from files it saves itself but from files saved from other programs
@@ -154,7 +154,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 	}
 
 	public MapEditor(Risk r,SwingGUIPanel panel) {
-		this.panel = panel;
+		this.swingGuiPanel = panel;
 
 		setName( "Map Editor" );
 
@@ -611,7 +611,7 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 			if ( checkMap() ) {
 				try {
 					myrisk.newMemoryGame(myMap,buildMapFile("mem.map", "mem.cards", "mem_map", "mem_pic"));
-                                        panel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
+                                        swingGuiPanel.showMapImage( new ImageIcon( editPanel.getImagePic().getScaledInstance(203,127, java.awt.Image.SCALE_SMOOTH ) ) );
 				}
                                 catch (Exception e) {
 					showError(e);
