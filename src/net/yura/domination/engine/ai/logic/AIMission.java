@@ -15,10 +15,10 @@ import net.yura.domination.engine.core.Player;
  * TODO infer the other missions
  * TODO modify isTooWeak and calculate the probable number of countries to take
  */
-public class AIMission extends AIDomination {
+public class AIMission extends AIStrategy {
 
         public AIMission(int type) {
-            super(type);
+            setType(type);
         }
 
 	@Override

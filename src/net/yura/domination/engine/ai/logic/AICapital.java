@@ -17,10 +17,10 @@ import net.yura.domination.engine.core.Player;
 /**
  * @author Steven Hawkins
  */
-public class AICapital extends AIDomination {
+public class AICapital extends AIStrategy {
 
         public AICapital(int type) {
-            super(type);
+            setType(type);
         }
 
 	/**
