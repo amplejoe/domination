@@ -26,6 +26,7 @@ import javax.swing.plaf.basic.BasicGraphicsUtils;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.UIUtilReferences;
+import net.yura.domination.engine.MiniLobbyFactory;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.engine.guishared.AboutDialog;
@@ -638,7 +639,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
             final ME4SEPanel wrapper = new ME4SEPanel();
             wrapper.getApplicationManager().applet = UIUtilReferences.applet;
             
-            MiniLobbyClient mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
+            MiniLobbyClient mlc = MiniLobbyFactory.makeMiniLobbyClient(myrisk, window);
             wrapper.add(mlc.getRoot());
 
             mlc.addCloseListener(new net.yura.mobile.gui.ActionListener() {
