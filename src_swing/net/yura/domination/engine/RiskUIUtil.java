@@ -1185,6 +1185,7 @@ public class RiskUIUtil {
 	/**
 	 * @see net.yura.domination.mapstore.MapChooser#createImage(java.io.InputStream)
 	 */
+	/*
 	public static BufferedImage read(InputStream in) throws IOException {
 		try {
 			BufferedImage img = ImageIO.read(in);
@@ -1199,6 +1200,7 @@ public class RiskUIUtil {
 			}
 		}
 	}
+	*/
 
 	public static double getDisplayDensity() {
 		try {

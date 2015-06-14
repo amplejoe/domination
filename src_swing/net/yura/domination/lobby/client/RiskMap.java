@@ -6,6 +6,7 @@ import java.awt.Image;
 import java.util.Hashtable;
 import net.yura.domination.engine.RiskUIUtil;
 import net.yura.domination.engine.RiskUtil;
+import net.yura.domination.engine.ImageUtil;
 
 public class RiskMap {
 
@@ -79,7 +80,7 @@ public class RiskMap {
                 String prvImage = (String)mapinfo.get("prv");
                 if (prvImage!=null) {
                     try {
-                        BufferedImage mapimageO = RiskUIUtil.read( RiskUtil.openMapStream("preview/"+prvImage) );
+                        BufferedImage mapimageO = ImageUtil.read( RiskUtil.openMapStream("preview/"+prvImage) );
 
                         icon = new ImageIcon(mapimageO.getScaledInstance(50,31,Image.SCALE_SMOOTH));
                         iconSmall = new ImageIcon(mapimageO.getScaledInstance(32,20,Image.SCALE_SMOOTH));

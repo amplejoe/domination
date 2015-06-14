@@ -62,6 +62,7 @@ import javax.swing.filechooser.FileFilter;
 import net.yura.domination.engine.ColorUtil;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
+import net.yura.domination.engine.ImageUtil;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.core.Card;
 import net.yura.domination.engine.core.Continent;
@@ -508,8 +509,8 @@ public class MapEditor extends JPanel implements ActionListener, ChangeListener,
 
 		InputStream in = RiskUtil.openMapStream(map.getImagePic());
 
-		BufferedImage ipic = makeRGBImage(RiskUIUtil.read(in));
-		BufferedImage imap = makeRGBImage(RiskUIUtil.read(RiskUtil.openMapStream(map.getImageMap())));
+		BufferedImage ipic = makeRGBImage(ImageUtil.read(in));
+		BufferedImage imap = makeRGBImage(ImageUtil.read(RiskUtil.openMapStream(map.getImageMap())));
 
 		map.setMemoryLoad();
 
