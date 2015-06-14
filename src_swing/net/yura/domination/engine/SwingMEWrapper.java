@@ -39,7 +39,7 @@ public class SwingMEWrapper {
         
         
         final ME4SEPanel wrapper = new ME4SEPanel(); // this sets the theme to NimbusLookAndFeel
-        wrapper.getApplicationManager().applet = RiskUIUtil.applet;
+        wrapper.getApplicationManager().applet = UIUtilApplet.applet;
 
         MapChooser.loadThemeExtension(); // loads extra things needed for map chooser
         
