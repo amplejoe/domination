@@ -91,7 +91,6 @@ import net.yura.domination.engine.guishared.RiskFileFilter;
 import net.yura.domination.engine.guishared.StatsPanel;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.domination.tools.mapeditor.MapEditor;
-import net.yura.domination.ui.guicommon.HistoryListener;
 import net.yura.grasshopper.ApplicationInfoProvider;
 
 /**
@@ -433,10 +432,9 @@ public class SwingGUIPanel extends JPanel implements ActionListener
 	class ConsoleTab extends JPanel implements SwingGUITab, ActionListener
 	{
 
-		//private String temptext;
-		//private Vector history;
-		//private int pointer;
-		HistoryListener historyListener;
+		private String temptext;
+		private Vector history;
+		private int pointer;
 
 		JMenu cConsole;
 		JToolBar toolbarCon;
@@ -455,8 +453,8 @@ public class SwingGUIPanel extends JPanel implements ActionListener
 
 			// ################### CONSOLE #######################
 
-			//history = new Vector();
-			//pointer = -1;
+			history = new Vector();
+			pointer = -1;
 
 			statusBar = new JLabel(resbundle.getString("swing.status.loading"));
 			Console = new JTextArea();
@@ -592,8 +590,58 @@ public class SwingGUIPanel extends JPanel implements ActionListener
 			c.gridheight = 1; // height
 			add(statusBar, c);
 
-			historyListener = new HistoryListener(Command);
-			//Command.addKeyListener(new HistoryListener);
+			Command.addKeyListener(new KeyAdapter()
+			{
+
+				public void keyPressed(KeyEvent key)
+				{
+
+					if (key.getKeyCode() == 38)
+					{
+						// Testing.append("up key (history)\n");
+
+						if (pointer < 0)
+						{
+							Toolkit.getDefaultToolkit().beep();
+						}
+						else
+						{
+							if (pointer == history.size() - 1)
+							{
+								temptext = Command.getText();
+							}
+							Command.setText((String) history.elementAt(pointer));
+							pointer--;
+						}
+					}
+					else if (key.getKeyCode() == 40)
+					{
+						// Testing.append("down key (history)\n");
+
+						if (pointer > history.size() - 2)
+						{
+							Toolkit.getDefaultToolkit().beep();
+						}
+						else if (pointer == history.size() - 2)
+						{
+							Command.setText(temptext);
+							pointer++;
+						}
+						else
+						{
+							pointer = pointer + 2;
+							Command.setText((String) history.elementAt(pointer));
+							pointer--;
+						}
+
+					}
+					else
+					{
+						pointer = history.size() - 1;
+					}
+
+				}
+			});
 
 			setOpaque(false);
 
@@ -704,10 +752,8 @@ public class SwingGUIPanel extends JPanel implements ActionListener
 				String input = Command.getText();
 				Command.setText("");
 
-				//history.add(input);
-				historyListener.addHistoryElement(input);
-				//pointer = history.size() - 1;
-				historyListener.setPointer(historyListener.getHistorySize() - 1);
+				history.add(input);
+				pointer = history.size() - 1;
 				cgo(input);
 
 			}
@@ -773,10 +819,8 @@ public class SwingGUIPanel extends JPanel implements ActionListener
 			else if (a.getActionCommand().equals("clear history"))
 			{
 
-				//history.clear();
-				historyListener.clearHistory();
-				//pointer = -1;
-				historyListener.setPointer(-1);
+				history.clear();
+				pointer = -1;
 
 			}
 			else
