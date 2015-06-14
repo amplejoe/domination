@@ -9,7 +9,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.UIUtilApplet;
+import net.yura.domination.engine.UIUtilReferences;
 import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.engine.translation.TranslationBundle;
 import net.yura.lobby.mini.MiniLobbyClient;
@@ -30,7 +30,7 @@ public class LobbyTab extends ME4SEPanel implements SwingGUITab,ActionListener {
     JButton start,stop;
     
     public LobbyTab(Risk myrisk) {
-        getApplicationManager().applet = UIUtilApplet.applet;
+        getApplicationManager().applet = UIUtilReferences.applet;
         risk = myrisk;
 
         toolbar = new JToolBar();

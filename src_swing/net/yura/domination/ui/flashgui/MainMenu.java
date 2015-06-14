@@ -25,7 +25,7 @@ import javax.swing.event.MouseInputListener;
 import javax.swing.plaf.basic.BasicGraphicsUtils;
 import net.yura.domination.engine.Risk;
 import net.yura.domination.engine.RiskUIUtil;
-import net.yura.domination.engine.UIUtilApplet;
+import net.yura.domination.engine.UIUtilReferences;
 import net.yura.domination.engine.RiskUtil;
 import net.yura.domination.engine.SwingMEWrapper;
 import net.yura.domination.engine.guishared.AboutDialog;
@@ -636,7 +636,7 @@ public class MainMenu extends JPanel implements MouseInputListener, KeyListener 
         void showMiniLobby() {
             
             final ME4SEPanel wrapper = new ME4SEPanel();
-            wrapper.getApplicationManager().applet = UIUtilApplet.applet;
+            wrapper.getApplicationManager().applet = UIUtilReferences.applet;
             
             MiniLobbyClient mlc = SwingMEWrapper.makeMiniLobbyClient(myrisk, window);
             wrapper.add(mlc.getRoot());

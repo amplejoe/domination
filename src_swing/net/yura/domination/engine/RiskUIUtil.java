@@ -196,9 +196,9 @@ public class RiskUIUtil {
 	 */
 	private static void riskOpenURL(URL docs) throws Exception {
 
-		if (UIUtilApplet.applet != null) {
+		if (UIUtilReferences.applet != null) {
 
-			UIUtilApplet.applet.getAppletContext().showDocument(docs, "_blank");
+			UIUtilReferences.applet.getAppletContext().showDocument(docs, "_blank");
 		} else if (webstart != null) {
 
 			javax.jnlp.BasicService bs = (javax.jnlp.BasicService) javax.jnlp.ServiceManager
@@ -253,9 +253,9 @@ public class RiskUIUtil {
 
 		try {
 
-			if (UIUtilApplet.applet != null) {
+			if (UIUtilReferences.applet != null) {
 
-				return new URL(UIUtilApplet.applet.getCodeBase(), a);
+				return new URL(UIUtilReferences.applet.getCodeBase(), a);
 
 			} else if (webstart != null) {
 
@@ -280,13 +280,13 @@ public class RiskUIUtil {
 
 	public static void setupMapsDir(Applet a) {
 
-		UIUtilApplet.applet = a;
+		UIUtilReferences.applet = a;
 
 		// only ever call this method once
 		if (mapsdir == null) {
 
 			// if applet is null check for webstart!
-			if (UIUtilApplet.applet == null) {
+			if (UIUtilReferences.applet == null) {
 
 				webstart = System.getProperty("javawebstart.version");
 
@@ -432,8 +432,8 @@ public class RiskUIUtil {
 		} else {
 
 			String names = null;
-			if (UIUtilApplet.applet != null) {
-				names = UIUtilApplet.applet.getParameter(a);
+			if (UIUtilReferences.applet != null) {
+				names = UIUtilReferences.applet.getParameter(a);
 			} else if (webstart != null) {
 				if ("map".equals(a)) {
 					names = maps;
@@ -541,7 +541,7 @@ public class RiskUIUtil {
 
 	public static String getLoadFileName(Frame frame) {
 
-		if (UIUtilApplet.applet != null) {
+		if (UIUtilReferences.applet != null) {
 
 			showAppletWarning(frame);
 
@@ -620,7 +620,7 @@ public class RiskUIUtil {
 
 	public static String getSaveFileName(Frame frame) {
 
-		if (UIUtilApplet.applet != null) {
+		if (UIUtilReferences.applet != null) {
 
 			showAppletWarning(frame);
 
@@ -720,7 +720,7 @@ public class RiskUIUtil {
 			cpu = "?";
 			info = "?";
 
-			if (UIUtilApplet.applet != null) {
+			if (UIUtilReferences.applet != null) {
 				name = "applet";
 			} else if (webstart != null) {
 				name = "web start (" + webstart + ")";
