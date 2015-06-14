@@ -154,7 +154,7 @@ public class RiskUIUtil {
 
 	public static URL mapsdir; // bundled maps are in this dir
 
-	public static Applet applet;
+	//public static Applet applet;
 	private static String webstart;
 
 	private static boolean nosandbox;
@@ -196,9 +196,9 @@ public class RiskUIUtil {
 	 */
 	private static void riskOpenURL(URL docs) throws Exception {
 
-		if (applet != null) {
+		if (UIUtilApplet.applet != null) {
 
-			applet.getAppletContext().showDocument(docs, "_blank");
+			UIUtilApplet.applet.getAppletContext().showDocument(docs, "_blank");
 		} else if (webstart != null) {
 
 			javax.jnlp.BasicService bs = (javax.jnlp.BasicService) javax.jnlp.ServiceManager
@@ -253,9 +253,9 @@ public class RiskUIUtil {
 
 		try {
 
-			if (applet != null) {
+			if (UIUtilApplet.applet != null) {
 
-				return new URL(applet.getCodeBase(), a);
+				return new URL(UIUtilApplet.applet.getCodeBase(), a);
 
 			} else if (webstart != null) {
 
@@ -280,13 +280,13 @@ public class RiskUIUtil {
 
 	public static void setupMapsDir(Applet a) {
 
-		applet = a;
+		UIUtilApplet.applet = a;
 
 		// only ever call this method once
 		if (mapsdir == null) {
 
 			// if applet is null check for webstart!
-			if (applet == null) {
+			if (UIUtilApplet.applet == null) {
 
 				webstart = System.getProperty("javawebstart.version");
 
@@ -432,8 +432,8 @@ public class RiskUIUtil {
 		} else {
 
 			String names = null;
-			if (applet != null) {
-				names = applet.getParameter(a);
+			if (UIUtilApplet.applet != null) {
+				names = UIUtilApplet.applet.getParameter(a);
 			} else if (webstart != null) {
 				if ("map".equals(a)) {
 					names = maps;
@@ -541,7 +541,7 @@ public class RiskUIUtil {
 
 	public static String getLoadFileName(Frame frame) {
 
-		if (applet != null) {
+		if (UIUtilApplet.applet != null) {
 
 			showAppletWarning(frame);
 
@@ -620,7 +620,7 @@ public class RiskUIUtil {
 
 	public static String getSaveFileName(Frame frame) {
 
-		if (applet != null) {
+		if (UIUtilApplet.applet != null) {
 
 			showAppletWarning(frame);
 
@@ -720,7 +720,7 @@ public class RiskUIUtil {
 			cpu = "?";
 			info = "?";
 
-			if (applet != null) {
+			if (UIUtilApplet.applet != null) {
 				name = "applet";
 			} else if (webstart != null) {
 				name = "web start (" + webstart + ")";
