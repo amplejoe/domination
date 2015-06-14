@@ -377,67 +377,9 @@ public class RiskGUI extends JFrame implements MouseInputListener
 		// add status bar
 		getContentPane().add(statusBar, c);
 
-		/*
-		class CommandKeyAdapter extends KeyAdapter
-		{
-			RiskGUI adaptee;
-
-			CommandKeyAdapter(RiskGUI adaptee)
-			{
-				this.adaptee = adaptee;
-			}
-
-			public void keyPressed(KeyEvent key)
-			{
-
-				if (key.getKeyCode() == 38)
-				{
-
-					if (pointer < 0)
-					{
-						Toolkit.getDefaultToolkit().beep();
-					}
-					else
-					{
-						if (pointer == history.size() - 1)
-						{
-							temptext = Command.getText();
-						}
-						Command.setText((String) history.elementAt(pointer));
-						pointer--;
-					}
-				}
-				else if (key.getKeyCode() == 40)
-				{
-
-					if (pointer > history.size() - 2)
-					{
-						Toolkit.getDefaultToolkit().beep();
-					}
-					else if (pointer == history.size() - 2)
-					{
-						Command.setText(temptext);
-						pointer++;
-					}
-					else
-					{
-						pointer = pointer + 2;
-						Command.setText((String) history.elementAt(pointer));
-						pointer--;
-					}
-
-				}
-				else
-				{
-					pointer = history.size() - 1;
-				}
-
-			}
-		}
-		*/
-
+		
 		//Command.addKeyListener(new CommandKeyAdapter(this));
-		historyListener = new HistoryListener(Command);
+		historyListener = new HistoryListener(Command, null);
 		
 		ActionListener readCommand = new ActionListener()
 		{
@@ -447,6 +389,8 @@ public class RiskGUI extends JFrame implements MouseInputListener
 				String input = Command.getText();
 				Command.setText("");
 
+				//history.add(input);
+				//pointer = history.size() - 1;
 				historyListener.addHistoryElement(input);
 				historyListener.setPointer(historyListener.getHistorySize() - 1);
 				go(input);

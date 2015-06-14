@@ -592,7 +592,7 @@ public class SwingGUIPanel extends JPanel implements ActionListener
 			c.gridheight = 1; // height
 			add(statusBar, c);
 
-			historyListener = new HistoryListener(Command);
+			historyListener = new HistoryListener(Command, null);
 			//Command.addKeyListener(new HistoryListener);
 
 			setOpaque(false);

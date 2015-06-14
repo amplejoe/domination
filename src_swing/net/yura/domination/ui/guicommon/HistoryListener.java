@@ -5,6 +5,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class HistoryListener extends KeyAdapter
@@ -13,10 +14,12 @@ public class HistoryListener extends KeyAdapter
 	private int pointer;
 	private Vector history;
 	private String tempText;
+	private JTextArea testLogArea;
 	
-	public HistoryListener(JTextField field)
+	public HistoryListener(JTextField field, JTextArea testLogArea)
 	{
 		this.field = field;
+		this.testLogArea = testLogArea;
 		history = new Vector();
 		pointer = -1;
 		field.addKeyListener(this);
@@ -48,7 +51,7 @@ public class HistoryListener extends KeyAdapter
 		//System.out.println("Key pressed:"+key.getKeyCode());
 		if (key.getKeyCode() == 38)
 		{
-			// Testing.append("up key (history)\n");
+			if (testLogArea != null) testLogArea.append("up key (history)\n");
 
 			if (pointer < 0)
 			{
@@ -66,7 +69,7 @@ public class HistoryListener extends KeyAdapter
 		}
 		else if (key.getKeyCode() == 40)
 		{
-			// Testing.append("down key (history)\n");
+			if (testLogArea != null) testLogArea.append("down key (history)\n");
 
 			if (pointer > history.size() - 2)
 			{
@@ -90,14 +93,5 @@ public class HistoryListener extends KeyAdapter
 			pointer = history.size() - 1;
 		}
 
-	}
-	
-	public void attachHistoryListener(JTextField field, int pointer, Vector history, String tempText)
-	{
-		field.addKeyListener(new KeyAdapter()
-		{
-
-			
-		});
-	}
+	}	
 }
